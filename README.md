@@ -97,7 +97,7 @@
 		
 - Arquivos de configuração
 	- YAML
-		"""
+```
 		apiVersion: v1
 		kind: Service
 		metadata:
@@ -106,15 +106,15 @@
 			replicas: 2
 			selector:
 			ports:
-		"""
+```
 	- Estrutura
 		1. Metadata
 		2. Especificação 
 		3. status (Gerado automaticamente pelo Kubernetes)
 			Irá verificar o status atual vs status ideal
 			(REACT?)
-			-> etcd
-	
+			etcd
+			
 	Interessante manter os arquivos YAML no repositório git do projeto
 	
 - Minikube & Kubectl
@@ -129,28 +129,32 @@
 	
 	https://www.itechtics.com/enable-hyper-v-windows-10-home/#google_vignette
 	
-	
+	```
 	//Iniciando Minikube cluster:
 	minikube start --driver=hyperv
 	
 	//Checar status
 	minikube status
-	
+	```
 	- Kubectl
-	
+	```
 	kubectl get node
+	```
 	
 	https://kubernetes.io/docs/concepts/configuration/configmap/
 	'mongo-config.yaml'
+	```
 	apiVersion: v1
 	kind: ConfigMap
 	metadata:
 	  name: mongo-config
 	data:
 	  mongo-url: mong-service
-		
+	```
+	
 	https://kubernetes.io/docs/concepts/configuration/secret/
 	'mongo-secret.yaml'
+	```
 	apiVersion: v1
 	kind: Secret
 	metadata:
@@ -159,10 +163,12 @@
 	data:
 	  mongo-user: bW9uZ291c2Vy
 	  mongo-password: bW9uZ29wYXNzd29yZA==
-	  
+	```
+	
 	Deployment & Service in one file  
 	https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 	'mongo.yaml'
+	```
 	apiVersion: apps/v1
 	kind: Deployment
 	metadata:
@@ -207,8 +213,10 @@
 		- protocol: TCP
 		  port: 27017
 		  targetPort: 27017
-		  
+	```
+	
 	'webapp.yaml'
+	```
 	apiVersion: apps/v1
 	kind: Deployment
 	metadata:
@@ -260,7 +268,7 @@
 		  port: 3000
 		  targetPort: 3000
 		  nodePort: 30100
-		  
+	```
 		  
 -- Comandos
 
