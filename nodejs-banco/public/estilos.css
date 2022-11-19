@@ -1,0 +1,345 @@
+@charset "utf-8";
+
+/* RESET */
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, code,
+del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+em {
+	font-style: italic;
+}
+
+strong {
+	font-weight: bold;
+}
+
+html,
+body {
+	margin:0;
+	padding:0;
+	height:100%;
+    font-family: NotoSans,Arial,"Arial Unicode MS",sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    word-break: normal;
+}
+/* /END RESET */
+
+
+a img {
+	border: none;
+	outline: none;
+}
+
+a {
+	outline: none;
+	text-decoration: none;
+}
+
+/* remove dotted lines on some links in FF browser */
+a,
+a:active,
+a:visited,
+a img {
+	outline: none;
+}
+
+/* CLEARFIX */
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+/* /END CLEARFIX */
+
+/*					
+BUTTONS AND STUFF
+*/
+
+a {
+    color: #0076ad;
+}
+
+body {
+    background: #ffffff;
+    color: #242424;
+}
+
+.card {
+    background: #ffffff;
+    color: #242424;
+    padding: 20px;
+}
+
+button, .button, .invert-button, .topnav-link{
+    display: inline-block;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1.5;
+    font-size: 1rem;
+    padding: 0.321rem 0.6rem;
+}
+
+.topnav-link{
+    color:white;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.topnav-link.active{
+    background:#0076ad;
+}
+
+.topnav-link:hover{
+    background:#242424;
+}
+
+.topnav-link.active:hover{
+    background:#00557d;
+}
+
+button, .button, .invert-button > a {
+    color: inherit;
+}
+
+button, .button {
+    background: #ffffff;
+    color: #0076ad;
+    border: 1px solid #0076AD;
+}
+
+.card.historia {
+    margin-top: 20px;
+}
+
+.historia-linha {
+    margin: 5px;
+    padding: 10px;
+}
+
+a.historia-trecho {
+    color: inherit;
+
+    /*Aumentar área de seleção sem criar espaço*/
+    margin: -5px;
+    padding: 5px;
+}
+
+a.historia-trecho:hover {
+    background: #ddddff;
+    color: #0076ad;
+}
+
+.historia-addrow {
+    box-sizing: border-box;
+    white-space: unset;
+    display: flex;
+    flex-direction: column;
+}
+
+input.historia-add[type=text] {
+    flex: 1 auto;
+    box-sizing: border-box;
+    -webkit-transition: flex 0.4s ease-in;
+    transition: flex 0.4s ease-in;
+}
+
+input.historia-submit {
+    box-sizing: border-box;
+    align-self: flex-end;
+
+    color: transparent;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+@media only screen and (min-width: 760px)
+{
+    input.historia-add[type=text] {
+        flex: 0 auto;
+    }
+
+    input.historia-submit {
+        align-self: unset;
+    }
+
+    .historia-addrow {
+        white-space: nowrap;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: stretch;
+    }
+}
+
+/* When the input field gets focus, change its width to 100% */
+input.historia-add[type=text]:focus {
+    flex: 1 auto;
+}
+
+/* When the input field gets focus, change its width to 100%*/
+input.historia-add[type=text]:focus + input.historia-submit {
+    background: #ffffff;
+    color: #0076ad;
+    border: 1px solid #0076AD;
+}
+
+input.historia-add[type=text]:focus + input.historia-submit:hover {
+    color: #002347;
+    border: 1px solid #002347;
+}
+
+.button.opcoes {
+    border-radius: 24px;
+    margin: 5px;
+    padding: 10px;
+}
+
+.button:hover {
+    color: #002347;
+    border: 1px solid #002347;
+}
+
+.invert-button {
+    background: #0076ad;
+    color: #ffffff;
+    border: 1px solid #0076AD;
+}
+
+.invert-button:hover {
+    background: #002347;
+}
+
+.section {
+    background: transparent;
+    color: #242424;
+}
+
+.invert-section {
+    background: #26333B;
+    color: #ffffff;
+}
+
+.section-title {
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
+    
+}
+
+.footer {
+    background-color: #F6F6F6;
+    border-top: 1px solid #808080;
+    padding-top: 35px;
+    padding-bottom: 40px;
+}
+
+.footer-container {
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.regionMain {
+    margin: 0 auto;
+}
+
+main.main {
+    padding-bottom: 100px;
+}
+
+.main {
+    background: #f6f6f6;
+    color: #242424;
+}
+
+.regionContent {
+    padding: 0 16px 0;
+}
+
+.banner {
+    height:100px;
+    overflow: hidden;
+    display: flex;
+}
+
+@media only screen and (min-width: 520px)
+{
+    .regionContent {
+        padding: 0 24px 0;
+    }
+
+    .banner {
+        height:150px;
+    }
+}
+
+@media only screen and (min-width: 760px)
+{
+    .regionContent {
+        padding: 0 32px 0;
+    }
+
+    .banner {
+        height:200px;
+    }
+}
+
+@media only screen and (min-width: 960px)
+{
+    .regionMain {
+        max-width: 1200px;
+        min-width: 800px;
+        width: auto;
+    }
+
+    .main {
+        margin: 0 30px;
+    }
+
+    .regionContent {
+        padding: 0 64px 0;
+    }
+
+    .banner {
+        height:300px;
+    }
+}
+
+
+
+/*
+TOPNAV
+*/
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+}

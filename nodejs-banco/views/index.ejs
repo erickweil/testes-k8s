@@ -1,0 +1,70 @@
+<% 
+function converterData(data)
+{
+    if(!data) return "data desconhecida"
+    // segundos
+    diff = Math.floor((Date.now() - data.getTime()) / 1000)
+
+    if(diff <= 1) return "agora mesmo"
+
+    if(diff < 60) return diff+" segundo"+(diff > 1 ? "s" : "")+" atrás"
+
+    // minutos
+    diff = Math.floor(diff / 60)
+
+    if(diff < 60) return diff+" minuto"+(diff > 1 ? "s" : "")+" atrás"
+
+    // horas
+    diff = Math.floor(diff / 60)
+
+    if(diff < 24) return diff+" hora"+(diff > 1 ? "s" : "")+" atrás"
+
+
+    const option = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+    }
+    const locale = 'pt-br'
+    return data.toLocaleDateString( locale, option)
+}
+%> 
+
+
+<div class="invert-section banner">
+    <h2 style="margin: auto;text-align: center;">NODE EXPRESS EJS</h2>
+</div>
+
+<div class="regionContent">
+    <section class="section">
+        <h2 class="section-title"><%= titulo %></h2>
+        <h3 class="section-title">Online no IP:<%= ip %></h3>
+        <p>Tabela de Acessos:</p>
+        <% 
+        if(!locals.listagem)
+        {
+            %><p>Nenhum acesso...</p><%
+        }
+        else
+        {
+            %><div align="center"><table class="card">
+            <tr><th>Data</th><th>Caminho</th><th>IP</th><th>Browser User Agent</th></tr>    
+            <%
+            for(const row of locals.listagem)
+            {
+                %>
+                <tr>
+                <td class="card"><%= converterData(row.data) %></td>
+                <td class="card"><%= row.path %></td>
+                <td class="card"><%= row.ip %></td>
+                <td class="card"><p style="max-width:300px;overflow:hidden;white-space: nowrap;"><%= row.user_agent %></p></td>
+                </tr>
+                <%
+            }
+            %></table></div><%
+        }
+        %> 
+    </section>
+</div>

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-deploy
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nodejs-deploy
+  template:
+    metadata:
+      labels:
+        app: nodejs-deploy
+    spec:
+      containers:
+      - name: nodejs-deploy
+        image: erickweil/nodejs-k8s-exemplo:1.0.2
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
