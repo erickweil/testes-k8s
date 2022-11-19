@@ -166,6 +166,34 @@ nginx-deploy-79fc8f9fb5-hl6z2   1/1     Running   0          30s
 A qualquer momento é possível alterar a quantidade de replicas para mais ou menos
 e o kubernetes irá redimensionar automaticamente o número de Pods
 
+O Deployment irá sempre tentar manter o número de replicas especificado por você, caso por exemplo um pod tenha um erro e feche será lançado um novo para substituí-lo (Caso a aplicação tenha um erro e fique reiniciando ele para de tentar criar novos pods após um número de falhas seguidas)
+
+Podemos testar o lançamento de novos pods em caso de falhas por criar uma falha manual: deletar um pod
+
+Veja o que acontece:
+```
+PS C:\git\testes-k8s> kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-54dbc5bdff-2q5s9   1/1     Running   0          9m13s
+nginx-deploy-54dbc5bdff-8sfms   1/1     Running   0          9m23s
+nginx-deploy-54dbc5bdff-mthff   1/1     Running   0          9m4s
+PS C:\git\testes-k8s> kubectl delete pod nginx-deploy-54dbc5bdff-8sfms
+pod "nginx-deploy-54dbc5bdff-8sfms" deleted
+PS C:\git\testes-k8s> kubectl get pods
+NAME                            READY   STATUS        RESTARTS   AGE
+nginx-deploy-54dbc5bdff-2q5s9   1/1     Running       0          10m
+nginx-deploy-54dbc5bdff-8sfms   1/1     Terminating   0          10m
+nginx-deploy-54dbc5bdff-mthff   1/1     Running       0          9m56s
+nginx-deploy-54dbc5bdff-npwxc   1/1     Running       0          33s
+PS C:\git\testes-k8s> kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-deploy-54dbc5bdff-2q5s9   1/1     Running   0          10m
+nginx-deploy-54dbc5bdff-mthff   1/1     Running   0          10m
+nginx-deploy-54dbc5bdff-npwxc   1/1     Running   0          39s
+```
+
+Veja que após algum tempo o deployment voltou a ficar com 3 pods, mesmo após o comando de parar um desses pods.
+
 - Services
 
 Para que a aplicação seja acessível, é necessário expor a porta
@@ -206,3 +234,35 @@ C:\Windows\system32>minikube service nginx-deploy
 
 Arquivos finais: https://github.com/bstashchuk/k8s
 
+## Rolling update
+
+É possível Alterar a imagem de um Deployment sem em nenhum momento ter perda de disponibilidade do serviço, isso é feito por manter a StretgyType do Deployment como 'RollingUpdate', que é o valor padrão, e então ao trocar a imagem ou tag da imagem dos containers de um Deployment, serão parados e atualizados 1 por 1, onde que se houver mais de 1 replica sempre haverá outros containers ativos na versão antiga ainda aceitando requisições.
+
+Desta forma a Atualização é feita sem perda de disponibilidade pois sempre haverá containers ativos.
+
+Como alterar a imagem:
+```
+kubectl set image deployment nginx-deploy nginx-simples=erickweil/nodejs-k8s-exemplo:1.0.2
+```
+
+Execute o comando a seguir em rápida sucessão para acompanhar o rollout:
+```
+PS C:\git\testes-k8s> kubectl rollout status deploy nginx-deploy
+Waiting for deployment "nginx-deploy" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "nginx-deploy" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "nginx-deploy" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "nginx-deploy" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "nginx-deploy" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "nginx-deploy" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "nginx-deploy" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "nginx-deploy" rollout to finish: 1 old replicas are pending termination...
+deployment "nginx-deploy" successfully rolled out
+```
+
+## Minikube Dashboard
+
+É possível visualizar o status de seu cluster kubernetes minikube utilizando o dashboard do minikube.
+
+```
+minikube dashboard
+```

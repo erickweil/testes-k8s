@@ -1,8 +1,14 @@
-import express from "express";
+const express = require('express');
 
 const app = express();
 
+const { lookup } = require('dns').promises;
+const { hostname } = require('os');
 
+async function getMyIPAddress(options) {
+  return (await lookup(hostname(), options))
+    .address;
+}
 
 // Permite receber valores do POST como urlencoded e json
 app.use(express.urlencoded({extended: true}));
@@ -28,11 +34,20 @@ app.use(express.static('public'));
 // Gerado uma vez só na inicialização
 const randomNumber = Math.floor(Math.random() * 10000) + 1;
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+
+    const info = {
+        ip: res.socket.remoteAddress,
+        user_agent: req.get('User-Agent'),
+        path: req.originalUrl,
+        host_ip: await getMyIPAddress()
+    };
+
     res.render("index",{ 
         numero:randomNumber,
         titulo:"Seja bem vindo!", 
-        conteudo:"Obrigado por acessar esta página" 
+        conteudo:"Obrigado por acessar esta página",
+        info:info
     });
 })
 

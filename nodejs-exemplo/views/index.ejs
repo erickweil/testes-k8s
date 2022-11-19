@@ -8,9 +8,17 @@
 </head>
 <body>
     <h1><%= titulo %></h1>
+    <h3>Online no IP:<%= info.host_ip %></h3>
 
     <p><%= conteudo %></p>
 
 	<p>Número Aleatório identificador deste POD:<%= numero %></p>
+
+    <div style="background-color: azure;padding: 20px;">
+        <p><bold>IP da Requisição:</bold><%= info.ip %></p>
+        <p><bold>Caminho:</bold><%= info.path %></p>
+        <p><bold>User Agent:</bold><%= info.user_agent %></p>
+    </div>
+    
 </body>
 </html>
