@@ -7,7 +7,8 @@ import JogoDaVida from './pages/JogoDaVida';
 function App() {
   //const APIURL = "localhost:9090";
   
-  const APIURL = "192.168.1.112:31001";
+  //const APIURL = "192.168.1.112:31001";
+  const APIURL = "172.22.220.35:31001";
   const BASENAME = window.PUBLIC_URL && window.PUBLIC_URL.length > 0 ? window.PUBLIC_URL : "/";
   return (
     <BrowserRouter basename={BASENAME}>
