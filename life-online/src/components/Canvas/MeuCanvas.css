@@ -1,0 +1,22 @@
+html{
+    height:100%; 
+    width:100%; 
+    overflow: hidden;/* Para que a página n tenha scroll e atrapalhe o canvas*/
+    
+}
+
+body{
+    height: 100%;
+    width: 100%;
+}
+
+#root{
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+
+#canvasInAPerfectWorld{
+    flex: 1;
+}

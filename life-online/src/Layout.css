@@ -1,0 +1,156 @@
+
+.item:nth-child(even){
+  color:#aaa;
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+  .App-button {
+    background: #282c34;
+    color: white;
+    font-size: 1.2em;
+    margin: 10px;
+    display:inline;
+      border:1px solid #ddd;
+      border-radius:30px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .App-button.highlight {
+    background: white;
+    color: #282c34;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 10px;
+    display:inline;
+      border:1px solid #282c34;
+      border-radius:30px;
+    width: 60px;
+    height: 60px;
+  }
+
+
+  .App-textbutton {
+    background: #282c34;
+    color: white;
+    font-size: 1.0em;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    display:inline;
+      border:1px solid #ddd;
+      border-radius:60px;
+
+  }
+/*
+
+############# Barra Topo ###########
+
+*/
+nav.topo {
+    display: flex;
+}
+
+ul.topo .right{
+    float:right;
+}
+
+ul.topo .left{
+    float:left;
+}
+
+ul.topo{
+    background-color: #373433;
+    float: left;
+    width: 100%;
+    padding: 0;
+    margin :0;
+    list-style-type: none;
+}
+
+ul.topo li.col{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    background-color: #373433;	
+
+    /* mobile only */
+    display:block;
+}
+
+ul.topo li.col a{
+
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    color:white;
+    text-decoration: none;
+    background-color: #373433;
+    font-size: 0.9em;
+    line-height: 1.8;
+    font-family: "Helvetica Light", Helvetica, "Droid Sans", Arial, Arial Unicode MS, sans-serif;
+
+    /* mobile only */
+    display:block;
+}
+
+ul.topo li.col a:hover{
+    background-color: #0F0E0D;
+}
+
+/*
+####################### Alinhamentos diversos
+*/
+
+.rowContainer {
+  display: block;
+}
+
+.rowContainer.center {
+  text-align: center;
+}
+
+.rowContainer.left {
+  align-items: flex-start;
+}
+
+.colContainer {
+  display: block;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.colContainer > * {
+  display: inline-block;
+}
+
+.colContainer.right {
+  text-align: right;
+}
+
+.colContainer.left {
+  text-align: left;
+}
+
+.card {
+  text-align: start;
+}
+
+.card > p{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+
