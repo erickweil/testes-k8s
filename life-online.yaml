@@ -47,7 +47,7 @@ kind: Deployment
 metadata:
   name: life-online-frontend
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: life-online-frontend
@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
       - name: life-online-frontend
-        image: erickweil/life-online-frontend:1.0.1
+        image: erickweil/life-online-frontend:1.0.2
         resources:
           limits:
             memory: "128Mi"

@@ -4,11 +4,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BitCanvas from './components/BitCanvas/BitCanvas';
 import Layout from './Layout'
 import JogoDaVida from './pages/JogoDaVida';
+import Config from 'Config';
 function App() {
   //const APIURL = "localhost:9090";
-  
+
   //const APIURL = "192.168.1.112:31001";
-  const APIURL = "172.22.210.47:31001";
+  const APIURL = Config.get("goapiurl");
   const BASENAME = window.PUBLIC_URL && window.PUBLIC_URL.length > 0 ? window.PUBLIC_URL : "/";
   return (
     <BrowserRouter basename={BASENAME}>
