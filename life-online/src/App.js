@@ -5,7 +5,9 @@ import BitCanvas from './components/BitCanvas/BitCanvas';
 import Layout from './Layout'
 import JogoDaVida from './pages/JogoDaVida';
 function App() {
-
+  //const APIURL = "localhost:9090";
+  
+  const APIURL = "192.168.1.112:31001";
   const BASENAME = window.PUBLIC_URL && window.PUBLIC_URL.length > 0 ? window.PUBLIC_URL : "/";
   return (
     <BrowserRouter basename={BASENAME}>
@@ -15,7 +17,7 @@ function App() {
         //!ISBUILD && <Route path={BUILDBASENAME} element={<Redirecionar path={DEVBASENAME}/>}/>
         }
         <Route path="/" element={<Layout />}>
-          <Route index element={<JogoDaVida />} />
+          <Route index element={<JogoDaVida apiurl={APIURL}/>} />
         </Route>
       </Routes>
     </BrowserRouter>

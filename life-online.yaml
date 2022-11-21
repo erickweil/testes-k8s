@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: life-online-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: life-online-backend
+  template:
+    metadata:
+      labels:
+        app: life-online-backend
+    spec:
+      containers:
+      - name: life-online-backend
+        image: erickweil/life-online-backend:1.0.0
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "16.0"
+        ports:
+        - containerPort: 9090
+        env:
+        - name: WIDTH
+          value: "1024"
+        - name: HEIGHT
+          value: "1024"
+        - name: SLEEP
+          value: "100"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: life-online-backend
+spec:
+  type: NodePort
+  selector:
+    app: life-online-backend
+  ports:
+  - port: 9090
+    targetPort: 9090
+    nodePort: 31000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: life-online-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: life-online-frontend
+  template:
+    metadata:
+      labels:
+        app: life-online-frontend
+    spec:
+      containers:
+      - name: life-online-frontend
+        image: erickweil/life-online-frontend:1.0.0
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: life-online-frontend
+spec:
+  type: NodePort
+  selector:
+    app: life-online-frontend
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 31001
