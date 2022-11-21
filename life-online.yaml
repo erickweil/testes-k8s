@@ -40,7 +40,7 @@ spec:
   ports:
   - port: 9090
     targetPort: 9090
-    nodePort: 31000
+    nodePort: 31001
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
       - name: life-online-frontend
-        image: erickweil/life-online-frontend:1.0.0
+        image: erickweil/life-online-frontend:1.0.1
         resources:
           limits:
             memory: "128Mi"
@@ -77,4 +77,4 @@ spec:
   ports:
   - port: 80
     targetPort: 80
-    nodePort: 31001
+    nodePort: 31000
