@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import BitCanvas from './components/BitCanvas/BitCanvas';
 import Layout from './Layout'
 import JogoDaVida from './pages/JogoDaVida';
-import Config from './config/production.json';
+//import Config from './config/production.json';
+import Config from './config/production-kcire.json';
 function App() {
   //const APIURL = "localhost:9090";
 
@@ -18,12 +19,15 @@ function App() {
         // Se for no caminho de quando é build no dev, redireciona.
         //!ISBUILD && <Route path={BUILDBASENAME} element={<Redirecionar path={DEVBASENAME}/>}/>
         }
-        <Route path="/" element={<Layout />}>
+        <Route path="/life" element={<Layout />}>
           <Route index element={<JogoDaVida apiurl={APIURL}/>} />
         </Route>
       </Routes>
     </BrowserRouter>
   );
+//  return (
+//    <JogoDaVida apiurl={APIURL}/>
+//  )
 }
 
 export default App;

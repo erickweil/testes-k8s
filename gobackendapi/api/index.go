@@ -23,6 +23,8 @@ var upgrader = websocket.Upgrader{
 }
 
 func getIndex(context *gin.Context) {
+
+	fmt.Println(context.Request.Header)
 	//upgrade get request to websocket protocol
 	ws, err := upgrader.Upgrade(context.Writer, context.Request, nil)
 	if err != nil {
@@ -200,14 +202,14 @@ func Main(width int,height int,sleep int) {
 
 	router := gin.Default()
 	router.Use(CORSMiddleware())
-	router.GET("/", getIndex)
+	router.GET("/life/api", getIndex)
 
-	router.GET("/grade", getGrade)
+	router.GET("/life/api/grade", getGrade)
 
 	// DEBUG ONLY
-	router.GET("/gradetxt", getGradeTxt)
+	router.GET("/life/api/gradetxt", getGradeTxt)
 
-	router.POST("/grade/:x/:y/:v", setGrade)
+	router.POST("/life/api/grade/:x/:y/:v", setGrade)
 
 	fmt.Println("Iniciando server na porta 9090...")
 	router.Run("0.0.0.0:9090")

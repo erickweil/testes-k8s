@@ -103,7 +103,7 @@ const JogoDaVida = (props) => {
     useEffect(() => {
         const control = {"finished":false};
 
-        ws.current = new WebSocket("ws://"+props.apiurl);
+        ws.current = new WebSocket("wss://"+props.apiurl);
         ws.current.onopen = () => {
             control["finished"] = true;
             console.log("ws opened");
