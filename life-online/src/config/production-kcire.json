@@ -1,3 +1,4 @@
 {
-    "goapiurl": "kcire.fslab.dev/life/api"
+    "goapiurl": "https://kcire.fslab.dev/life/api",
+    "goapiwebsocket": "wss://kcire.fslab.dev/life/api"
 }

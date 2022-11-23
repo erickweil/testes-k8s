@@ -7,6 +7,7 @@ const JogoDaVida = (props) => {
     let estado = false;
     let setGrade = false;
     let arr = false;
+    const USARWEBSOCKET = false
     const ws = useRef(null);
 
     const onUpdateGrade = (data) => {
@@ -49,68 +50,87 @@ const JogoDaVida = (props) => {
     };
 
     const fetchGrade = (control) => {
-        /*let getParams = "";
-        if(estado && estado.gradeDrawEnd && estado.gradeDrawStart)
+        if(!USARWEBSOCKET)
         {
-            getParams = "?"+
-            "x0="+encodeURIComponent(estado.gradeDrawStart.x)+
-            "&x1="+encodeURIComponent(estado.gradeDrawEnd.x)+
-            "&y0="+encodeURIComponent(estado.gradeDrawStart.y)+
-            "&y1="+encodeURIComponent(estado.gradeDrawEnd.y)
-        }
+            let getParams = "";
+            if(estado && estado.gradeDrawEnd && estado.gradeDrawStart)
+            {
+                getParams = "?"+
+                "x0="+encodeURIComponent(estado.gradeDrawStart.x)+
+                "&x1="+encodeURIComponent(estado.gradeDrawEnd.x)+
+                "&y0="+encodeURIComponent(estado.gradeDrawStart.y)+
+                "&y1="+encodeURIComponent(estado.gradeDrawEnd.y)
+            }
 
-        fetch("http://localhost:9090/grade"+getParams)
-        .then((response) => response.json())
-        .then((data) => {
-           //console.log(data); // DEBUG
-           onUpdateGrade(data);
-           control["finished"] = true;
-        })
-        .catch((err) => {
-           console.log(err.message);
-        });*/
-        if(!ws.current) return;
-
-        ws.current.send(
-            JSON.stringify({
-                req:"getGrade",
-                x0:""+estado.gradeDrawStart.x,
-                x1:""+estado.gradeDrawEnd.x,
-                y0:""+estado.gradeDrawStart.y,
-                y1:""+estado.gradeDrawEnd.y
+            fetch(props.apiurl+"/grade"+getParams)
+            .then((response) => response.json())
+            .then((data) => {
+            //console.log(data); // DEBUG
+            onUpdateGrade(data);
+            control["finished"] = true;
             })
-        )
+            .catch((err) => {
+            console.log(err.message);
+            });
+        }
+        else
+        {
+            if(!ws.current) return;
+
+            ws.current.send(
+                JSON.stringify({
+                    req:"getGrade",
+                    x0:""+estado.gradeDrawStart.x,
+                    x1:""+estado.gradeDrawEnd.x,
+                    y0:""+estado.gradeDrawStart.y,
+                    y1:""+estado.gradeDrawEnd.y
+                })
+            )
+        }
     };
 
     const onSetCell = (coord,value) => {
-        /*fetch("http://localhost:9090/grade/"+coord.x+"/"+coord.y+"/"+value,{
-            method: "POST"
-        })
-        .then((response) => response.json())
-        .then((data) => {
-           console.log(data);
-        })
-        .catch((err) => {
-           console.log(err.message);
-        });*/
-        if(!ws.current) return;
         
-        ws.current.send(
-            JSON.stringify({req:"setGrade",x:""+coord.x,y:""+coord.y,v:""+value})
-        )
+        if(!USARWEBSOCKET)
+        {
+            fetch(props.apiurl+"/grade/"+coord.x+"/"+coord.y+"/"+value,{
+                method: "POST"
+            })
+            .then((response) => response.json())
+            .then((data) => {
+            console.log(data);
+            })
+            .catch((err) => {
+            console.log(err.message);
+            });
+        }
+        else
+        {
+            if(!ws.current) return;
+            
+            ws.current.send(
+                JSON.stringify({req:"setGrade",x:""+coord.x,y:""+coord.y,v:""+value})
+            )
+        }
     }
 
     useEffect(() => {
         const control = {"finished":false};
-
-        ws.current = new WebSocket("wss://"+props.apiurl);
-        ws.current.onopen = () => {
-            control["finished"] = true;
-            console.log("ws opened");
+        let wsCurrent = false;
+        if(USARWEBSOCKET)
+        {
+            ws.current = new WebSocket(props.apiwebsocket);
+            ws.current.onopen = () => {
+                control["finished"] = true;
+                console.log("ws opened");
+            }
+            ws.current.onclose = () => console.log("ws closed");
+            wsCurrent = ws.current;
         }
-        ws.current.onclose = () => console.log("ws closed");
-        const wsCurrent = ws.current;
-
+        else
+        {
+            control["finished"] = true;
+        }
         
         const interval = setInterval(() => {
             if(control["finished"] === true)
@@ -120,25 +140,29 @@ const JogoDaVida = (props) => {
             }
         }, 110);
 
-        ws.current.onmessage = e => {
-            //if (isPaused) return;
-            const message = JSON.parse(e.data);
-            //console.log("e", message);
-            //console.log("ws response:", message);
+        if(USARWEBSOCKET)
+        {
+            ws.current.onmessage = e => {
+                //if (isPaused) return;
+                const message = JSON.parse(e.data);
+                //console.log("e", message);
+                //console.log("ws response:", message);
 
-            if(message.grade)
-            {
-                control["finished"] = true;
-                onUpdateGrade(message);
-            }
-            else
-            {
-                console.log("ws response:", message);
-            }
-        };
+                if(message.grade)
+                {
+                    control["finished"] = true;
+                    onUpdateGrade(message);
+                }
+                else
+                {
+                    console.log("ws response:", message);
+                }
+            };
+        }
 
         return () => {
             clearInterval(interval);
+            if(USARWEBSOCKET && wsCurrent)
             wsCurrent.close()
         };
      }, []);
