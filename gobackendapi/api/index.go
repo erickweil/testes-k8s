@@ -9,9 +9,20 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
+
+type Coords struct {
+	X int `json:"x"`
+	Y int `json:"y"`
+	V int `json:"v"`
+}
+
+type CoordReq struct {
+	CoordList []Coords `json:"coords"`
+}
 
 var upgrader = websocket.Upgrader{
     //check origin will check the cross region source (note : please not using in production)
@@ -43,7 +54,7 @@ func getIndex(context *gin.Context) {
 
 		//fmt.Println(string(message))
 
-		var jsonResp map[string]string
+		var jsonResp map[string]interface{}
 		err = json.Unmarshal(message,&jsonResp);
 		if err == nil {
 			var req = jsonResp["req"]
@@ -55,10 +66,10 @@ func getIndex(context *gin.Context) {
 					time.Sleep(1 * time.Millisecond)
 				}
 				lastStepCont = simulation.GetStepCount() 
-				resp = doGetGrade(jsonResp["x0"],jsonResp["x1"],jsonResp["y0"],jsonResp["y1"])
+				resp = doGetGrade(jsonResp["x0"].(string),jsonResp["x1"].(string),jsonResp["y0"].(string),jsonResp["y1"].(string))
 				break
 			case "setGrade":
-				resp = doSetGrade(jsonResp["x"],jsonResp["y"],jsonResp["v"])
+				resp = doSetGrade(jsonResp["x"].(CoordReq))
 				break
 			default:
 				resp = []byte("{\"error\": \"Requisição desconhecida\"}")
@@ -151,33 +162,41 @@ func getGradeTxt(context *gin.Context) {
 	context.Data(http.StatusOK,"text/html; charset=utf-8", []byte(gradestr))
 }
 
-func doSetGrade(_x string, _y string, _value string) []byte {
-	var x, errx = strconv.Atoi(_x)
-	var y, erry = strconv.Atoi(_y)
-	var value, errv = strconv.Atoi(_value)
+func doSetGrade(req CoordReq) []byte {
 
-	if errx != nil || erry != nil || errv != nil{
-		return []byte("{\"error\": \"As coordenadas enviadas são inválidas\"}")
+	var coordlist []Coords = req.CoordList
+	
+	for _, coord := range coordlist {
+		var x = coord.X
+		var y = coord.Y
+
+		if x >= simulation.GetWidth() || x < 0 || y >= simulation.GetHeight() || y < 0 {
+			return []byte("{\"error\": \"Uma das coordenadas enviadas estão fora do intervalo da grade\"}")
+		}
 	}
 
-	if x >= simulation.GetWidth() || x < 0 || y >= simulation.GetHeight() || y < 0 {
-		return []byte("{\"error\": \"As coordenadas enviadas estão fora do intervalo da grade\"}")
-	}
+	for _, coord := range coordlist {
+		var x = coord.X
+		var y = coord.Y
+		var v = coord.V
 
-	simulation.Set(x,y,value)
+		simulation.Set(x,y,v)
+	}
 
 	return []byte("{\"status\":\"OK\"}")
 }
 
 func setGrade(context *gin.Context) {
-	var x = context.Param("x")
-	var y = context.Param("y")
-	var value = context.Param("v")
+	var req CoordReq
 
-	context.Data(http.StatusOK,"application/json",doSetGrade(x,y,value))
+	if err := context.BindJSON(&req); err != nil {
+		context.JSON(http.StatusOK,gin.H{"error": "Sem os parâmetros necessários e/ou formatação inválida"})
+	}
+
+	context.Data(http.StatusOK,"application/json",doSetGrade(req))
 }
 
-func CORSMiddleware() gin.HandlerFunc {
+/*func CORSMiddleware() gin.HandlerFunc {
     return func(c *gin.Context) {
         c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
         c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
@@ -191,17 +210,28 @@ func CORSMiddleware() gin.HandlerFunc {
 
         c.Next()
     }
-}
+}*/
 
+func preflight(context *gin.Context) {
+	context.JSON(http.StatusOK, struct{}{})
+}
 
 func Main(width int,height int,sleep int) {
 	fmt.Println("Iniciando simulação da grade...")
 	simulation.InitGrid(width,height)
-	simulation.SetRandom()
+	//simulation.SetRandom()
 	go simulation.RunSimulation(sleep,true)
 
 	router := gin.Default()
-	router.Use(CORSMiddleware())
+	//router.Use(CORSMiddleware())
+	// CORS for https://foo.com and https://github.com origins, allowing:
+	// - PUT and PATCH methods
+	// - Origin header
+	// - Credentials share
+	// - Preflight requests cached for 12 hours
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	router.Use(cors.New(config))
 	router.GET("/life/api", getIndex)
 
 	router.GET("/life/api/grade", getGrade)
@@ -209,7 +239,8 @@ func Main(width int,height int,sleep int) {
 	// DEBUG ONLY
 	router.GET("/life/api/gradetxt", getGradeTxt)
 
-	router.POST("/life/api/grade/:x/:y/:v", setGrade)
+	router.OPTIONS("/life/api/grade", preflight)
+	router.POST("/life/api/grade", setGrade)
 
 	fmt.Println("Iniciando server na porta 9090...")
 	router.Run("0.0.0.0:9090")

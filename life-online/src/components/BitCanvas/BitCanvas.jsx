@@ -72,6 +72,75 @@ const BitCanvas = (props) => {
                     ctx.fillRect(x*larg, y*larg, larg, larg);
                 }
             }
+
+            if(estado.desenhando)
+            {
+                ctx.fillStyle = "rgba(255, 255, 255, 1.0)";
+                ctx.strokeStyle = "rgba(0, 0, 0, 1.0)";
+                ctx.lineWidth = larg/3;
+                for(let pix of estado.desenhando)
+                {
+                    if(pix.v == 1)
+                    ctx.fillRect(pix.x*larg, pix.y*larg, larg, larg);
+                    else
+                    ctx.strokeRect(pix.x*larg + larg/4, pix.y*larg + larg/4, larg/2, larg/2);
+                }    
+            }
+        }
+    }
+    const onClick = (e,estado) =>
+    {
+        const mouse = estado.mouse;
+
+        if(e.button == 2) // Right click
+        {
+            props.onSetCell(estado.desenhando)
+            
+            return {
+                desenhando: []
+            }
+        }
+    }
+
+    const getDesenhando = (pos,estado) => {
+        for(let pix of estado.desenhando)
+        {
+            if(pix.x == pos.x && pix.y == pos.y)
+            {
+                return pix
+            }
+        }
+        return false
+    }
+
+    const trySetCell = (mouse, estado, allowUnset) =>
+    {
+        const mpix = {
+            x: Math.min(estado.gradew,Math.max(0,Math.floor(mouse.x / estado.larg))),
+            y: Math.min(estado.gradeh,Math.max(0,Math.floor(mouse.y / estado.larg)))
+        };
+
+        const pix = getDesenhando(mpix,estado)
+        if(pix === false)
+        {
+            const v = estado.grade[mpix.y*estado.gradew + mpix.x] == 1 ? 0 : 1
+            //estado.grade[mpix.y*estado.gradew + mpix.x] = ;
+            //props.onSetCell(mpix,1);
+            estado.desenhando.push({x:mpix.x,y:mpix.y,v:v});
+
+            return {
+                desenhando: estado.desenhando
+            }
+        }
+        else
+        {
+            if(allowUnset)
+            {
+                pix.v = pix.v == 1 ? 0 : 1
+                return {
+                    desenhando: estado.desenhando
+                }
+            }
         }
     }
 
@@ -81,18 +150,23 @@ const BitCanvas = (props) => {
 
         if(mouse.left)
         {
-            const mpix = {
-                x: Math.min(estado.gradew,Math.max(0,Math.floor(mouse.x / estado.larg))),
-                y: Math.min(estado.gradeh,Math.max(0,Math.floor(mouse.y / estado.larg)))
-            };
-
-            if(estado.grade[mpix.y*estado.gradew + mpix.x] != 1)
-            {
-                estado.grade[mpix.y*estado.gradew + mpix.x] = 1;
-                props.onSetCell(mpix,1);
-            }
+            return trySetCell(mouse,estado,false)   
         }
     };
+
+    const onMouseDown = (e,estado) =>
+    {
+        const mouse = estado.mouse;
+
+        if(e.button == 0)
+        {
+            return trySetCell(mouse,estado,true)
+        }
+    }
+
+    const onMouseUp = (e,estado) =>
+    {
+    }
 
     const everyFrame = (estado) =>
     {
@@ -110,6 +184,7 @@ const BitCanvas = (props) => {
             gradew: 100,
             gradeh: 100,
             grade: false,
+            desenhando: [],
             larg: 10
         });
 
@@ -130,7 +205,10 @@ const BitCanvas = (props) => {
         draw={mydraw}
         everyFrame={everyFrame}
         events={{
-            onMouseMove:onMouseMove
+            onMouseMove:onMouseMove,
+            onMouseDown:onMouseDown,
+            onMouseUp:onMouseUp,
+            onClick:onClick
         }}
         options={options}
         />

@@ -89,12 +89,14 @@ const JogoDaVida = (props) => {
         }
     };
 
-    const onSetCell = (coord,value) => {
+    const onSetCell = (coords) => {
         
         if(!USARWEBSOCKET)
         {
-            fetch(props.apiurl+"/grade/"+coord.x+"/"+coord.y+"/"+value,{
-                method: "POST"
+            fetch(props.apiurl+"/grade",{
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ coords:coords })
             })
             .then((response) => response.json())
             .then((data) => {
@@ -109,7 +111,7 @@ const JogoDaVida = (props) => {
             if(!ws.current) return;
             
             ws.current.send(
-                JSON.stringify({req:"setGrade",x:""+coord.x,y:""+coord.y,v:""+value})
+                JSON.stringify({req:"setGrade",coords:coords})
             )
         }
     }
