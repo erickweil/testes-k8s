@@ -82,21 +82,12 @@ minikube start --driver=hyperv
 
 # Verifica se está online
 minikube status
-
-# IP da máquina virtual Worker Node
-minikube ip
-
-# Acessando o node kubernetes vias ssh
-ssh docker@172.19.235.61
-(Usuário: docker, senha: tcuser)
-
 ```
 
 Um node do minikube é uma máquina virtual, com docker instalado,
 Uma vez conectado ao Node via ssh, é possível listar os containers,
 serviços, etc...
 
-(comandos abaixo estão fora da máquina, saia do ssh primeiro)
 ```
 # Listar Nodes
 kubectl get nodes
@@ -120,8 +111,36 @@ kubectl get pods
 kubectl describe pod nginx
 ```
 
-(A qualquer momento você pode entrar via ssh no Worker Node e gerenciar o container normalmente
-pelos comandos do docker)
+É possível acompanhar o status em tempo real dos pods com `kubectl get pods --watch`
+
+> **Entrando no Node**
+> 
+> A qualquer momento você pode entrar via ssh no Node do Minikube e ver os containers normalmente pelos comandos do docker. Veja como funciona
+> primeiro execute o comando abaixo para encontrar o ip do node minikube:
+> ```
+> minkube ip
+> ```
+> Então entre via ssh com usuário 'docker' e senha 'tcuser'
+> ```
+> ssh docker@IP-DO-MINIKUBE
+> INSIRA A SENHA 'tcuser'
+> ```
+
+Caso você deseje ver a situação de um pod por entrar em um terminal bash ou sh, é possível pelo comando `kubectl exec`
+
+Então uma vez que o pod esteja em execução, basta entrar nele por spawnar um processo de terminal interativo:
+```bash
+kubectl exec -it nginx -- sh
+```
+Este comando irá abrir um shell interativo que lhe permite analisar arquivos de log, processos em execução, etc... útil para diagnosticar como a aplicação está se comportando dentro do pod.
+
+Editando as configurações de um pod
+
+```
+kubectl edit pod nginx
+```
+
+Irá abrir um editor de texto com configurações atual do pod em formato YAML. Alterando seus valores e salvando irá atualizá-lo.
 
 Removendo pod
 ```
@@ -137,7 +156,7 @@ kubectl create deployment nginx-deploy --image=erickweil/nginx-simples
 
 kubectl get deployments
 
-k describe deployment nginx-deploy
+kubectl describe deployment nginx-deploy
 ```
 
 Veja que o Pod é criado automaticamente.
@@ -230,9 +249,6 @@ C:\Windows\system32>minikube service nginx-deploy
 |-----------|--------------|-------------|----------------------------|
 * Opening service default/nginx-deploy in default browser...
 ```
-## Montando um Deployment de SUA APLICAÇÃO do ZERO
-
-Arquivos finais: https://github.com/bstashchuk/k8s
 
 ## Rolling update
 

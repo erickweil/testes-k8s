@@ -3,6 +3,30 @@
 > Recomendado:
 > Instale o plugin do VSCode "Kubernetes" para melhor produtividade criando estes arquivos de configurações
 
+## Criando a configuração de um Pod
+
+No caso, o ideal é fazer Deployments, porém apenas para introduzir um exemplo simples, como criar um arquivo que configura um Pod.
+
+`pod.yaml`
+```yaml
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: nginx-pod
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx:alpine
+```
+
+### Criando Pod com um arquivo yaml 
+Com um terminal no mesmo diretório do arquivo de configuração do pod, é possível criar um pod com o comando:
+```
+kubectl apply -f .\pod.yaml
+```
+
+Você pode alterar a configuração do pod e aplicar novamente e o pod será recriado com as novas configurações.
+
 ## Criando a configuração de um Deployment
 
 No root de seu projeto, crie um arquivo deployment.yaml
