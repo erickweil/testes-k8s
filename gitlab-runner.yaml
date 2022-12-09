@@ -49,6 +49,7 @@ imagePullPolicy: IfNotPresent
 ## ref: https://docs.gitlab.com/runner/commands/index.html#gitlab-runner-register
 ##
 # gitlabUrl: http://gitlab.your-domain.com/
+gitlabUrl: https://gitlab.com/
 
 ## The Registration Token for adding new Runners to the GitLab Server. This must
 ## be retrieved from your GitLab Instance.
@@ -61,7 +62,7 @@ imagePullPolicy: IfNotPresent
 ## ref: (we don't yet have docs for that, but we want to use existing token)
 ##
 # runnerToken: ""
-#
+runnerRegistrationToken: GR1348941CGjxUSzKw9C3EMhpyVss 
 
 ## Unregister all runners before termination
 ##
