@@ -7,7 +7,7 @@ workflow:
   rules:
     - if: '$CI_COMMIT_REF_NAME == "master"' # Auto deploy on master
       when: always
-    - when: always # Manually deploy on all other branches
+    - when: never # Manually deploy on all other branches
 
 variables:
 #  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
@@ -35,39 +35,30 @@ test-job1:
 
 # https://www.digitalocean.com/community/tutorials/how-to-set-up-a-continuous-deployment-pipeline-with-gitlab-ci-cd-on-ubuntu-18-04
 publish:
-  rules:
-    - when: on_success
-  image: docker:latest
-  # https://pythonspeed.com/articles/gitlab-build-docker-image/
-  # This will run a Docker daemon in a container
-  # (Docker-In-Docker), which will be available at
-  # thedockerhost:2375. If you make e.g. port 5000 public in
-  # Docker (`docker run -p 5000:5000 yourimage`) it will be
-  # exposed at thedockerhost:5000.
-  services:
-   - name: docker:dind
-     alias: dockerdaemon
-
-  variables:
-    # Tell docker CLI how to talk to Docker daemon.
-    DOCKER_HOST: tcp://dockerdaemon:2375/
-    # Use the overlayfs driver for improved performance.
-    DOCKER_DRIVER: overlay2
-    # Disable TLS since we're running inside local network.
-    DOCKER_TLS_CERTDIR: ""
   stage: publish
-  before_script:
-    - docker info
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  # Build and push the Docker image to the GitLab image registry
+  # using Podman.
+
+  image:
+    name: quay.io/podman/stable
+
+    # GitLab has a built-in Docker image registry, whose
+    # parameters are set automatically. You can use some
+    # other Docker registry though by changing the login and
+    # image name.
   script:
-    - docker build -t $TAG_COMMIT -t $TAG_LATEST nodejs-exemplo
-    - docker push $TAG_COMMIT
-    - docker push $TAG_LATEST
+    #- docker info
+    #- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+    #- docker build -t $TAG_COMMIT -t $TAG_LATEST nodejs-exemplo
+    #- docker push $TAG_COMMIT
+    #- docker push $TAG_LATEST
+    - podman login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - podman build -t "$TAG_LATEST" -t "$TAG_COMMIT" nodejs-exemplo
+    - podman push "$TAG_COMMIT"
+    - podman push "$TAG_LATEST"
 
 # https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
 deploy:
-  rules:
-    - when: on_success
   stage: deploy
   image:
     name: bitnami/kubectl:latest
