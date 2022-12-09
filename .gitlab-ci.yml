@@ -3,15 +3,18 @@ stages:
   - publish
   - deploy
 
+workflow:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"' # Auto deploy on master
+      when: always
+    - when: always # Manually deploy on all other branches
+
 variables:
 #  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
   TAG_LATEST: $CI_REGISTRY_IMAGE/nodejs-exemplo:latest
   TAG_COMMIT: $CI_REGISTRY_IMAGE/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
 
 test-job1:
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
-    - allow_failure: false
   stage: test
   script:
     - echo "TESTANDO VARIÁVEIS"
@@ -33,8 +36,7 @@ test-job1:
 # https://www.digitalocean.com/community/tutorials/how-to-set-up-a-continuous-deployment-pipeline-with-gitlab-ci-cd-on-ubuntu-18-04
 publish:
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
-    - allow_failure: false
+    - when: on_success
   image: docker:latest
   stage: publish
   services:
@@ -50,7 +52,6 @@ publish:
 # https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
 deploy:
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"'
     - when: on_success
   stage: deploy
   image:
