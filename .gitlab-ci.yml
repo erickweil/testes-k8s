@@ -39,9 +39,11 @@ publish:
   stage: publish
   services:
     - docker:dind
+  before_script:
+    - docker info
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
     - docker build -t $TAG_COMMIT -t $TAG_LATEST nodejs-exemplo
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
 

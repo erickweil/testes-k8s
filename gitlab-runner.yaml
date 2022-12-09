@@ -1,3 +1,7 @@
+# PARA INSTALAR
+# opt: helm uninstall gitlab-runner
+# helm install --namespace default gitlab-runner -f gitlab-runner.yaml --set rbac.create=true gitlab/gitlab-runner
+
 ## GitLab Runner Image
 ##
 ## By default it's using registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v{VERSION}
@@ -703,14 +707,20 @@ configMaps: {}
 
 ## Additional volumeMounts to add to the runner container
 ##
-volumeMounts: []
+volumeMounts:
+# https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4453
+  - mountPath: /var/run/docker.sock
+    name: docker-socket
   # Example:
   # - name: my-volume
   #   mountPath: /mount/path
 
 ## Additional volumes to add to the runner deployment
 ##
-volumes: []
+volumes:
+  - name: docker-socket
+    hostPath:
+      path: /var/run/docker.sock
   # Example:
   # - name: my-volume
   #   persistentVolumeClaim:
