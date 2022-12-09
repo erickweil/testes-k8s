@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nodejs-deploy
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels:
       app: nodejs-deploy
@@ -14,10 +14,11 @@ spec:
     spec:
       containers:
       - name: nodejs-deploy
-        image: erickweil/nodejs-k8s-exemplo:1.0.2
+#       image: erickweil/nodejs-k8s-exemplo:1.0.2
+        image: registry.gitlab.com/erickweil/testes-k8s/develop:latest
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "100m"
         ports:
         - containerPort: 3000
