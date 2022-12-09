@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weilplace-site-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: weilplace-site-deploy
+  template:
+    metadata:
+      labels:
+        app: weilplace-site-deploy
+    spec:
+      containers:
+      - name: weilplace-site-deploy
+        image: erickweil/weilplace-site:latest
+        env:
+        - name: APISERVER
+          value: "https://kcire.fslab.dev/weilplace/api/"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weilplace-site-svc
+spec:
+  type: NodePort
+  selector:
+    app: weilplace-site-deploy
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 31000

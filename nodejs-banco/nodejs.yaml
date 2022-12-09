@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nodejs-banco
 spec:
-  replicas: 4
+  replicas: 2
   selector:
     matchLabels:
       app: nodejs-banco
@@ -18,7 +18,7 @@ spec:
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "100m"
         ports:
         - containerPort: 3000
         env:
@@ -27,7 +27,7 @@ spec:
         - name: TITULO
           value: "NODEJS COM BANCO NO KUBERNETES"
         - name: MONGODB_HOST
-          value: "mongodb"
+          value: "host.minikube.internal"
         - name: MONGODB_PORT
           value: "27017"
 ---
@@ -42,40 +42,4 @@ spec:
   ports:
   - port: 3000
     targetPort: 3000
-    nodePort: 31001
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mongodb
-spec:
-  replicas: 1 # BANCO DE DADOS 1 REPLICA SÓ
-  selector:
-    matchLabels:
-      app: mongodb
-  template:
-    metadata:
-      labels:
-        app: mongodb
-    spec:
-      containers:
-      - name: mongodb
-        image: mongo
-        resources:
-          limits:
-            memory: "2Gi"
-            cpu: "2.0"
-        ports:
-        - containerPort: 27017
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mongodb
-spec:
-  type: ClusterIP
-  selector:
-    app: mongodb
-  ports:
-  - port: 27017
-    targetPort: 27017
+    nodePort: 31002

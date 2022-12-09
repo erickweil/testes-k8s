@@ -103,6 +103,8 @@ kubectl apply -f .\deployment.yaml
 
 Da mesma forma que é possível configurar um Deployment utilizando um arquivo .yaml, é possível configurar um Service.
 
+O service irá permitir que todos os pods capturados pelo selector sejam acessíveis pela porta especificada.
+
 Veja como fica para que a aplicação nodejs que escuta na porta 3000 nos containers esteja disponível na porta 31000 do minikube node:
 `service.yaml`
 ```yaml
