@@ -38,9 +38,24 @@ publish:
   rules:
     - when: on_success
   image: docker:latest
-  stage: publish
+  # https://pythonspeed.com/articles/gitlab-build-docker-image/
+  # This will run a Docker daemon in a container
+  # (Docker-In-Docker), which will be available at
+  # thedockerhost:2375. If you make e.g. port 5000 public in
+  # Docker (`docker run -p 5000:5000 yourimage`) it will be
+  # exposed at thedockerhost:5000.
   services:
-    - docker:dind
+   - name: docker:dind
+     alias: dockerdaemon
+
+  variables:
+    # Tell docker CLI how to talk to Docker daemon.
+    DOCKER_HOST: tcp://dockerdaemon:2375/
+    # Use the overlayfs driver for improved performance.
+    DOCKER_DRIVER: overlay2
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: ""
+  stage: publish
   before_script:
     - docker info
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
