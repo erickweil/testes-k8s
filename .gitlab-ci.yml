@@ -1,0 +1,8 @@
+deploy:
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  script:
+    - kubectl config get-contexts
+    - kubectl config use-context erickweil/testes-k8s:locaweb
+    - kubectl get pods
