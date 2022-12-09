@@ -1,27 +1,40 @@
-build-job:
-  stage: build
-  script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
+stages:
+  - test
+# - publish
+  - deploy
+
+variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
 
 test-job1:
   stage: test
   script:
-    - echo "This job tests something"
-
-test-job2:
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 20
-
-deploy-prod:
-  stage: deploy
-  script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-  environment: production
-
+    - echo "TESTANDO VARIÁVEIS"
+    - echo "TAG_COMMIT"
+    - echo $TAG_COMMIT
+    - echo "TAG_LATEST"
+    - echo $TAG_LATEST
+    - echo "CI_BUILD_TOKEN"
+    - echo $CI_BUILD_TOKEN
+    - echo "CI_REGISTRY"
+    - echo $CI_REGISTRY
+    - echo CI_REGISTRY_IMAGE
+    - echo $CI_REGISTRY_IMAGE
+    - echo CI_COMMIT_REF_NAME
+    - echo $CI_COMMIT_REF_NAME
+    - echo CI_COMMIT_SHORT_SHA
+    - echo $CI_COMMIT_SHORT_SHA
+#publish:
+#  image: docker:latest
+#  stage: publish
+#  services:
+#    - docker:dind
+#  script:
+#    - docker build -t $TAG_COMMIT -t $TAG_LATEST .
+#    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+#    - docker push $TAG_COMMIT
+#    - docker push $TAG_LATEST
 deploy:
   stage: deploy
   image:
@@ -31,3 +44,4 @@ deploy:
     - kubectl config get-contexts
     - kubectl config use-context erickweil/testes-k8s:locaweb
     - kubectl get pods
+    - kubectl rollout restart deployment weilplace-api-deploy
