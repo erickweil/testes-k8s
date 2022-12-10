@@ -86,7 +86,7 @@ app.get("/", async (req, res) => {
     const info = await getInfo(req,res)
 
     res.render("index",{
-        titulo:"Seja bem vindo!!", 
+        titulo:"Seja bem vindo!!!!", 
         conteudo:"Obrigado por acessar esta página",
         info:info
     });
