@@ -1,26 +1,15 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Pod
 metadata:
   name: mongodb
+  labels:
+    app: mongodb
 spec:
-  replicas: 1 # BANCO DE DADOS 1 REPLICA SÓ
-  selector:
-    matchLabels:
-      app: mongodb
-  template:
-    metadata:
-      labels:
-        app: mongodb
-    spec:
-      containers:
-      - name: mongodb
-        image: mongo
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "100m"
-        ports:
-        - containerPort: 27017
+  containers:
+    - name: mongodb
+      image: mongo
+      ports:
+      - containerPort: 27017
 ---
 apiVersion: v1
 kind: Service

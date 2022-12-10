@@ -27,7 +27,8 @@ spec:
         - name: TITULO
           value: "NODEJS COM BANCO NO KUBERNETES"
         - name: MONGODB_HOST
-          value: "host.minikube.internal"
+#         value: "host.minikube.internal"
+          value: "mongodb"
         - name: MONGODB_PORT
           value: "27017"
 ---
