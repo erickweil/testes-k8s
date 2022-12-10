@@ -120,7 +120,7 @@ publish-nodejs-exemplo:
       --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
       --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME"
       --tag $TAG_COMMIT
-      .
+      nodejs-exemplo
     - docker tag $TAG_COMMIT $TAG_LATEST
     - docker push "$TAG_COMMIT"
     - docker push "$TAG_LATEST"
