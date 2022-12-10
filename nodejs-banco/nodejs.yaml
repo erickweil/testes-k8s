@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nodejs-banco
-        image: erickweil/nodejs-k8s-banco:1.0.0
+        image: erickweil/nodejs-k8s-banco:1.0.1
         resources:
           limits:
             memory: "128Mi"
@@ -31,6 +31,8 @@ spec:
           value: "mongodb"
         - name: MONGODB_PORT
           value: "27017"
+        - name: PUBLICPATH
+          value: "/nodejs/"
 ---
 apiVersion: v1
 kind: Service

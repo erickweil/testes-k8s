@@ -32,10 +32,14 @@ app.set("layout","./layouts/default");
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-// Oferecer arquivos estáticos em './public/'
-app.use(express.static('public'));
 
-app.get("/", async (req, res) => {
+let router = express.Router()
+app.use(process.env.PUBLICPATH,router)
+
+// Oferecer arquivos estáticos em './public/'
+router.use(express.static('public'));
+
+router.get("/", async (req, res) => {
 
     const ip = res.socket.remoteAddress;
     const user_agent = req.get('User-Agent');
