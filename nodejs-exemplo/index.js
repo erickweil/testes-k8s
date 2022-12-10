@@ -45,7 +45,7 @@ app.get("/", async (req, res) => {
 
     res.render("index",{ 
         numero:randomNumber,
-        titulo:"Seja bem vindo!", 
+        titulo:"Seja bem vindo!!", 
         conteudo:"Obrigado por acessar esta página",
         info:info
     });

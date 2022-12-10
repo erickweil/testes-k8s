@@ -15,10 +15,12 @@ spec:
       containers:
       - name: nodejs-deploy
 #       image: erickweil/nodejs-k8s-exemplo:1.0.2
-        image: registry.gitlab.com/erickweil/testes-k8s/develop:latest
+        image: registry.gitlab.com/erickweil/testes-k8s/nodejs-exemplo:latest
         resources:
           limits:
             memory: "128Mi"
             cpu: "100m"
         ports:
         - containerPort: 3000
+      imagePullSecrets: 
+      - name: registry-credentials
