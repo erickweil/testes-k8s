@@ -147,6 +147,12 @@ Removendo pod
 kubectl delete pod nginx
 ```
 
+Expondo serviço no node
+```
+kubectl expose pod nginx --type='NodePort' --port=80 --target-port=80
+kubectl get services
+```
+
 ## Deployments
 
 Permite vários Pods que respondem à mesma porta

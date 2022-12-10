@@ -1,24 +1,38 @@
+variables:
+  RULES_CHANGES_PATH: "**/*"
+#  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_LATEST: $CI_REGISTRY_IMAGE/nodejs-exemplo:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
+
 stages:
   - test
   - publish
   - deploy
 
-workflow:
+.base-rules:
+  # https://how-to.dev/how-to-set-up-monorepo-build-in-gitlab-ci
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "main"' # Auto deploy on master
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: always
-    - if: '$CI_COMMIT_REF_NAME != "main"' # Auto deploy on master
+    - if: '$CI_PIPELINE_SOURCE == "push"'
       when: never
-    
-variables:
-#  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
-  TAG_LATEST: $CI_REGISTRY_IMAGE/nodejs-exemplo:latest
-  TAG_COMMIT: $CI_REGISTRY_IMAGE/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
-
-test-job1:
-  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - $RULES_CHANGES_PATH
     - when: manual
+      allow_failure: true
+
+.nodejs-exemplo:
+  extends: .base-rules
+  variables:
+    RULES_CHANGES_PATH: "nodejs-exemplo/**/*"
+
+test-nodejs-exemplo:
   stage: test
+  extends: .nodejs-exemplo
+  needs: []
   script:
     - echo "TESTANDO VARIÁVEIS"
     - echo "TAG_COMMIT"
@@ -37,7 +51,9 @@ test-job1:
     - echo $CI_COMMIT_SHORT_SHA
 
 # https://www.digitalocean.com/community/tutorials/how-to-set-up-a-continuous-deployment-pipeline-with-gitlab-ci-cd-on-ubuntu-18-04
-publish:
+publish-nodejs-exemplo:
+  extends: .nodejs-exemplo
+  needs: ["test-nodejs-exemplo"]
   stage: publish
   # Build and push the Docker image to the GitLab image registry
   # using Podman.
@@ -61,7 +77,9 @@ publish:
     - podman push "$TAG_LATEST"
 
 # https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
-deploy:
+deploy-nodejs-exemplo:
+  extends: .nodejs-exemplo
+  needs: ["publish-nodejs-exemplo"]
   stage: deploy
   image:
     name: bitnami/kubectl:latest
