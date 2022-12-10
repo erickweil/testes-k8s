@@ -5,9 +5,9 @@ stages:
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"' # Auto deploy on master
+    - if: '$CI_COMMIT_REF_NAME == "main"' # Auto deploy on master
       when: always
-    - if: '$CI_COMMIT_REF_NAME != "master"' # Auto deploy on master
+    - if: '$CI_COMMIT_REF_NAME != "main"' # Auto deploy on master
       when: never
     
 variables:
