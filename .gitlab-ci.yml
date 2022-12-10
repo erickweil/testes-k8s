@@ -29,6 +29,11 @@ stages:
   variables:
     RULES_CHANGES_PATH: "nodejs-exemplo/**/*"
 
+.desativado:
+  rules:
+    - when: manual
+      allow_failure: true
+
 test-nodejs-exemplo:
   stage: test
   extends: .nodejs-exemplo
@@ -51,8 +56,8 @@ test-nodejs-exemplo:
     - echo $CI_COMMIT_SHORT_SHA
 
 # https://www.digitalocean.com/community/tutorials/how-to-set-up-a-continuous-deployment-pipeline-with-gitlab-ci-cd-on-ubuntu-18-04
-publish-nodejs-exemplo:
-  extends: .nodejs-exemplo
+publish2-nodejs-exemplo:
+  extends: .desativado #.nodejs-exemplo
   needs: ["test-nodejs-exemplo"]
   stage: publish
   # Build and push the Docker image to the GitLab image registry
@@ -75,6 +80,44 @@ publish-nodejs-exemplo:
     - podman build -t "$TAG_LATEST" -t "$TAG_COMMIT" nodejs-exemplo
     - podman push "$TAG_COMMIT"
     - podman push "$TAG_LATEST"
+
+# https://blog.callr.tech/building-docker-images-with-gitlab-ci-best-practices/
+publish-nodejs-exemplo:
+  extends: .nodejs-exemplo
+  needs: ["test-nodejs-exemplo"]
+  stage: publish
+  
+  # Use this if your GitLab runner does not use socket binding
+  # services:
+  #   - docker:dind
+
+  # do not use latest
+  image: docker:dind
+
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  script:
+    # fetches the latest image (not failing if image is not found)
+    - docker pull $TAG_LATEST || true
+    # builds the project, passing proxy variables, using OCI labels
+    # notice the cache-from, which is going to use the image we just pulled locally
+    # the built image is tagged locally with the commit SHA, and then pushed to 
+    # the GitLab registry
+    - >
+      docker build
+      --pull
+      --cache-from $TAG_LATEST
+      --label "org.opencontainers.image.title=$CI_PROJECT_TITLE"
+      --label "org.opencontainers.image.url=$CI_PROJECT_URL"
+      --label "org.opencontainers.image.created=$CI_JOB_STARTED_AT"
+      --label "org.opencontainers.image.revision=$CI_COMMIT_SHA"
+      --label "org.opencontainers.image.version=$CI_COMMIT_REF_NAME"
+      --tag $TAG_COMMIT
+      .
+    - docker tag $TAG_COMMIT $TAG_LATEST
+    - docker push "$TAG_COMMIT"
+    - docker push "$TAG_LATEST"
+
 
 # https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
 deploy-nodejs-exemplo:
