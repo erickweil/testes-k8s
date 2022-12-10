@@ -20,7 +20,7 @@
         <p><bold>User Agent:</bold><%= info.user_agent %></p>
     </div>
 
-    <form action="/terminal" method="POST">
+    <form action="<%=info.publicpath%>terminal" method="POST">
         <div>
           <label for="cmd">></label>
           <textarea id="cmd" name="cmd" rows="4" cols="120"></textarea>

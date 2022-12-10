@@ -7,6 +7,7 @@ const { hostname } = require('os');
 
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec)
+require('dotenv').config();
 
 async function getMyIPAddress(options) {
   return (await lookup(hostname(), options))
@@ -39,6 +40,7 @@ const randomNumber = Math.floor(Math.random() * 10000) + 1;
 
 const getInfo = async (req,res) => {
     return {
+        publicpath: process.env.PUBLICPATH,
         numero: randomNumber,
         ip: res.socket.remoteAddress,
         user_agent: req.get('User-Agent'),
@@ -56,7 +58,21 @@ const execute = async (command) => {
     }
 };
 
-app.get("/terminal", async (req, res) => {
+let router = express.Router()
+app.use(process.env.PUBLICPATH,router)
+
+router.get("/", async (req, res) => {
+
+    const info = await getInfo(req,res)
+
+    res.render("index",{
+        titulo:"Olá!!!", 
+        conteudo:"Testes com Kubernetes",
+        info:info
+    });
+})
+
+router.get("/terminal", async (req, res) => {
 
     const info = await getInfo(req,res)
 
@@ -69,7 +85,7 @@ app.get("/terminal", async (req, res) => {
 })
 
 
-app.post("/terminal", async (req, res) => {
+router.post("/terminal", async (req, res) => {
 
     const info = await getInfo(req,res)
     const output = await execute(req.body.cmd)
@@ -81,16 +97,10 @@ app.post("/terminal", async (req, res) => {
     });
 })
 
-app.get("/", async (req, res) => {
+app.get("*", async (req, res) => {
 
-    const info = await getInfo(req,res)
+    res.status(404).send("Caminho "+req.originalUrl+" sem conteúdo")
 
-    res.render("index",{
-        titulo:"Seja bem vindo!!!!", 
-        conteudo:"Obrigado por acessar esta página",
-        info:info
-    });
 })
-
 
 app.listen(3000);
