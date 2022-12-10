@@ -22,5 +22,8 @@ spec:
             cpu: "100m"
         ports:
         - containerPort: 3000
+        env:
+        - name: "PUBLICPATH"
+          value: "/nodejs/"
       imagePullSecrets: 
       - name: registry-credentials
