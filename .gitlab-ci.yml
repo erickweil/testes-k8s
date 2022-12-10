@@ -16,6 +16,8 @@ variables:
   TAG_COMMIT: $CI_REGISTRY_IMAGE/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
 
 test-job1:
+  rules:
+    - when: manual
   stage: test
   script:
     - echo "TESTANDO VARIÁVEIS"
@@ -65,9 +67,9 @@ deploy:
     name: bitnami/kubectl:latest
     entrypoint: ['']
   script:
-    - kubectl config get-contexts
+#   - kubectl config get-contexts
     - kubectl config use-context erickweil/testes-k8s:locaweb
-    - kubectl get pods
+#   - kubectl get pods
     - kubectl apply -f ./nodejs-exemplo/deployment.yaml
     - kubectl apply -f ./nodejs-exemplo/service.yaml
-#   - kubectl rollout restart deployment weilplace-api-deploy
+    - kubectl rollout restart deployment nodejs-deploy
