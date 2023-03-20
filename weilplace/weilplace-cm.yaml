@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weilplace-cm
+data:
+  APISERVER: http://192.168.59.100:31001/
+  PLACEDELAY: "60"
+  SIZE: "128"

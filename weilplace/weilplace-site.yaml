@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: weilplace-site-deploy
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: weilplace-site-deploy
@@ -17,7 +17,10 @@ spec:
         image: erickweil/weilplace-site:latest
         env:
         - name: APISERVER
-          value: "https://kcire.fslab.dev/weilplace/api/"
+          valueFrom:
+            configMapKeyRef:
+              name: weilplace-cm
+              key: APISERVER
         resources:
           limits:
             memory: "128Mi"
