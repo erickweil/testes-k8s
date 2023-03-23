@@ -1,2 +1,4 @@
-kubectl/scripts/config
+*config
 *.pub
+*.env
+configmap.yaml

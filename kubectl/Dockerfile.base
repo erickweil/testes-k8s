@@ -1,0 +1,9 @@
+FROM ubuntu:latest
+
+WORKDIR /root
+
+COPY ./scripts/install.sh .
+RUN chmod +x ./install.sh
+RUN /bin/bash ./install.sh
+
+# docker build -t kubectl-base -f Dockerfile.base .
