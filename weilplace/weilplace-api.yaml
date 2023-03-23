@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/opt/volume/weilplace2"
+    path: "/opt/volume/weilplace"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -47,10 +47,7 @@ spec:
           - configMapRef:
               name: weilplace-cm
         args: ["-placedelay","$(PLACEDELAY)","-size","$(SIZE)"]
-        resources:
-          limits:
-            memory: "256Mi"
-            cpu: "100m"
+        resources: {}
         ports:
         - containerPort: 8090
         volumeMounts:
@@ -72,4 +69,4 @@ spec:
   ports:
   - port: 8090
     targetPort: 8090
-    nodePort: 31001
+    nodePort: 31101

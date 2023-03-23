@@ -21,10 +21,7 @@ spec:
             configMapKeyRef:
               name: weilplace-cm
               key: APISERVER
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "100m"
+        resources: {}
         ports:
         - containerPort: 80
 ---
@@ -39,4 +36,4 @@ spec:
   ports:
   - port: 80
     targetPort: 80
-    nodePort: 31000
+    nodePort: 31100
