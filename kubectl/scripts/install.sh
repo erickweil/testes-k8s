@@ -19,3 +19,13 @@ apt install -y git
 
 echo "Instalar ssh" #https://goteleport.com/blog/shell-access-docker-container-with-ssh-and-docker-exec/
 apt install -y openssh-server sudo
+
+
+echo "Instalar kustomize"
+#https://kubectl.docs.kubernetes.io/installation/kustomize/binaries/
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+mv ./kustomize  /usr/local/bin/kustomize 
+export PATH=$PATH:/usr/local/bin/kustomize
+
+echo "Instalar htop"
+apt-get install -y htop

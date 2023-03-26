@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: weilplace-cm
 data:
-  APISERVER: https://k3s.devops.fslab.dev/31101/
+  APISERVER: https://k3s.devops.fslab.dev/30090/
   PLACEDELAY: "0"
   SIZE: "128"

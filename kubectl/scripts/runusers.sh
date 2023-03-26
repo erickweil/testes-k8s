@@ -4,6 +4,18 @@
 # A ideia é que exista uma env USERS com os valores dos nomes e senhas
 #echo $USERS
 
+# DELETAR DEPOIS DE REBUILDAR A IMAGEM BASE
+# ----------------
+#https://kubectl.docs.kubernetes.io/installation/kustomize/binaries/
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+mv ./kustomize  /usr/local/bin/kustomize 
+export PATH=$PATH:/usr/local/bin/kustomize
+
+apt-get update
+apt-get install -y htop
+# ----------------
+
+
 # Onde deve estar os arquivos base de novos usuários
 mkdir -p $USERS_HOME_DIR/exemplo
 
