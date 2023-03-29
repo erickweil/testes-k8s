@@ -45,6 +45,7 @@ test-nodejs-exemplo:
   needs: []
   script:
     - echo "TESTANDO VARIÁVEIS"
+    - ls -lhas
     - echo "TAG_COMMIT"
     - echo $TAG_COMMIT
     - echo "TAG_LATEST"
@@ -129,7 +130,7 @@ publish-nodejs-exemplo:
 
 # https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
 deploy-nodejs-exemplo:
-  extends: .nodejs-exemplo
+  extends: .desativado #.nodejs-exemplo
   rules:
     - allow_failure: false
   needs: ["publish-nodejs-exemplo"]
