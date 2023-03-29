@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: teste-alpine
+  labels:
+    name: teste-alpine
+spec:
+  containers:
+  - name: teste-alpine
+    image: registry.fslab.dev/teste-alpine
+    resources: {}
+  imagePullSecrets:
+  - name: regcred
