@@ -66,8 +66,8 @@ router.get("/", async (req, res) => {
     const info = await getInfo(req,res)
 
     res.render("index",{
-        titulo:"Olá!!!", 
-        conteudo:"Testes com Kubernetes",
+        titulo:"Olá!", 
+        conteudo:"Testes com Kubernetes e GitLab",
         info:info
     });
 })

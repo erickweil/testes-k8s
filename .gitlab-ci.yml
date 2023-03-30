@@ -4,11 +4,11 @@ variables:
 #  TAG_LATEST: $CI_REGISTRY_IMAGE/nodejs-exemplo:latest
 #  TAG_COMMIT: $CI_REGISTRY_IMAGE/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
 
-  TAG_LATEST: $CI_REGISTRY/nodejs-exemplo:latest
-  TAG_COMMIT: $CI_REGISTRY/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
+  TAG_LATEST: registry.fslab.dev/nodejs-exemplo:latest
+  TAG_COMMIT: registry.fslab.dev/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
 
 # Deveria ser padrão mas precisa disso?
-  CI_REGISTRY: $CI_REGISTRY
+  CI_REGISTRY: registry.fslab.dev
   CI_REGISTRY_USER: $CI_REGISTRY_USER
   CI_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
 
@@ -60,12 +60,8 @@ test-nodejs-exemplo:
     - echo $TAG_LATEST
     - echo "CI_BUILD_TOKEN"
     - echo $CI_BUILD_TOKEN
-    - echo "CI_REGISTRY"
-    - echo $CI_REGISTRY
-    - echo "CI_REGISTRY_USER"
-    - echo $CI_REGISTRY_USER
-    - echo CI_REGISTRY_IMAGE
-    - echo $CI_REGISTRY_IMAGE
+    - echo "DOCKER_AUTH_CONFIG"
+    - echo $DOCKER_AUTH_CONFIG
     - echo CI_COMMIT_REF_NAME
     - echo $CI_COMMIT_REF_NAME
     - echo CI_COMMIT_SHORT_SHA
@@ -112,8 +108,11 @@ publish-nodejs-exemplo:
   # do not use latest
   image: docker:dind
 
+  #before_script:
+  #  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - mkdir -p $HOME/.docker
+    - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
   script:
     - mv nodejs-exemplo/.env.example nodejs-exemplo/.env
     # fetches the latest image (not failing if image is not found)
@@ -141,8 +140,8 @@ publish-nodejs-exemplo:
 # https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
 deploy-nodejs-exemplo:
   extends: .desativado #.nodejs-exemplo
-  rules:
-    - allow_failure: false
+  #rules:
+  #  - allow_failure: false
   needs: ["publish-nodejs-exemplo"]
   
   stage: deploy
