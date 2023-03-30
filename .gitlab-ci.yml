@@ -4,8 +4,8 @@ variables:
 #  TAG_LATEST: $CI_REGISTRY_IMAGE/nodejs-exemplo:latest
 #  TAG_COMMIT: $CI_REGISTRY_IMAGE/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
 
-  TAG_LATEST: nodejs-exemplo:latest
-  TAG_COMMIT: nodejs-exemplo:$CI_COMMIT_SHORT_SHA
+  TAG_LATEST: $CI_REGISTRY/nodejs-exemplo:latest
+  TAG_COMMIT: $CI_REGISTRY/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
 
 # Deveria ser padrão mas precisa disso?
   CI_REGISTRY: $CI_REGISTRY
