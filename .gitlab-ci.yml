@@ -110,9 +110,9 @@ publish-nodejs-exemplo:
 
   #before_script:
   #  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  before_script:
-    - mkdir -p $HOME/.docker
-    - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
+  #before_script:
+  #  - mkdir -p $HOME/.docker
+  #  - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
   script:
     - mv nodejs-exemplo/.env.example nodejs-exemplo/.env
     # fetches the latest image (not failing if image is not found)
