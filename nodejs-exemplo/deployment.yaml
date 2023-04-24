@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: nodejs-deploy
-        image: erickweil/nodejs-k8s-exemplo:latest
+        image: registry.fslab.dev/erickweil/nodejs-exemplo:latest
+#       image: erickweil/nodejs-k8s-exemplo:latest
 #       image: registry.gitlab.com/erickweil/testes-k8s/nodejs-exemplo:latest
         resources: {}
         ports:
@@ -23,4 +24,4 @@ spec:
         - name: "PUBLICPATH"
           value: "/"
       imagePullSecrets: 
-      - name: registry-credentials
+      - name: regcred

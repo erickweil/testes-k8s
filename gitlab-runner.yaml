@@ -66,7 +66,8 @@ gitlabUrl: https://gitlab.com/
 ## ref: (we don't yet have docs for that, but we want to use existing token)
 ##
 # runnerToken: ""
-runnerRegistrationToken: GR1348941CGjxUSzKw9C3EMhpyVss 
+#runnerRegistrationToken: GR1348941CGjxUSzKw9C3EMhpyVss 
+runnerRegistrationToken: GR1348941uQq3fNEtoe-yP4qcJUsz
 
 ## Unregister all runners before termination
 ##

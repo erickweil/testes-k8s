@@ -6,6 +6,7 @@ variables:
 #  CI_REGISTRY_IMAGE: $CI_REGISTRY/$GITLAB_USER_LOGIN
   TAG_LATEST: $CI_REGISTRY/$GITLAB_USER_LOGIN/nodejs-exemplo:latest
   TAG_COMMIT: $CI_REGISTRY/$GITLAB_USER_LOGIN/nodejs-exemplo:$CI_COMMIT_SHORT_SHA
+  KUBECTL_CONFIG: $KUBECTL_CONFIG
 
 stages:
   - test
@@ -144,9 +145,11 @@ deploy-nodejs-exemplo:
     name: bitnami/kubectl:latest
     entrypoint: ['']
   script:
-#   - kubectl config get-contexts
-    - kubectl config use-context erickweil/testes-k8s:locaweb
-#   - kubectl get pods
+    - mkdir ~/.kube
+    - echo $KUBECTL_CONFIG >> ~/.kube/config
+    - kubectl config get-contexts
+    - kubectl get node
+    - kubectl get pods
     - kubectl apply -f ./nodejs-exemplo/deployment.yaml
     - kubectl apply -f ./nodejs-exemplo/service.yaml
     - kubectl rollout restart deployment nodejs-deploy
