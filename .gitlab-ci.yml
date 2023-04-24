@@ -145,7 +145,6 @@ deploy-nodejs-exemplo:
     name: bitnami/kubectl:latest
     entrypoint: ['']
   script:
-    - mkdir ~/.kube
     - echo $KUBECTL_CONFIG >> ~/.kube/config
     - kubectl config get-contexts
     - kubectl get node
