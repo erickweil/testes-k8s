@@ -138,14 +138,14 @@ deploy-nodejs-exemplo:
   extends: .nodejs-exemplo
   #rules:
   #  - allow_failure: false
-  needs: ["publish-nodejs-exemplo"]
+  #needs: ["publish-nodejs-exemplo"]
   
   stage: deploy
   image:
     name: bitnami/kubectl:latest
     entrypoint: ['']
   script:
-    - echo $KUBECTL_CONFIG > ~/.kube/config
+    - yes | cp -f $KUBECTL_CONFIG ~/.kube/config
     - cat ~/.kube/config
     - kubectl config get-contexts
     - kubectl get node
