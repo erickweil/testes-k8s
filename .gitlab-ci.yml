@@ -91,9 +91,9 @@ publish2-nodejs-exemplo:
 
 # https://blog.callr.tech/building-docker-images-with-gitlab-ci-best-practices/
 publish-nodejs-exemplo:
-  extends: .nodejs-exemplo
-  rules:
-    - allow_failure: false
+  extends: .desativado #.nodejs-exemplo
+  #rules:
+  #  - allow_failure: false
   needs: ["test-nodejs-exemplo"]
   stage: publish
   
@@ -135,7 +135,7 @@ publish-nodejs-exemplo:
 
 # https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
 deploy-nodejs-exemplo:
-  extends: .desativado #.nodejs-exemplo
+  extends: .nodejs-exemplo
   #rules:
   #  - allow_failure: false
   needs: ["publish-nodejs-exemplo"]
@@ -145,7 +145,8 @@ deploy-nodejs-exemplo:
     name: bitnami/kubectl:latest
     entrypoint: ['']
   script:
-    - echo $KUBECTL_CONFIG >> ~/.kube/config
+    - echo $KUBECTL_CONFIG > ~/.kube/config
+    - cat ~/.kube/config
     - kubectl config get-contexts
     - kubectl get node
     - kubectl get pods
