@@ -14,6 +14,9 @@ echo "Instalar ping"
 apt update
 apt install -y iputils-ping
 
+echo "Instalar nslookup"
+apt install -y dnsutils
+
 echo "Instalar git"
 apt install -y git
 
@@ -29,3 +32,6 @@ export PATH=$PATH:/usr/local/bin/kustomize
 
 echo "Instalar htop"
 apt-get install -y htop
+
+#sudo apt install -y nginx
+

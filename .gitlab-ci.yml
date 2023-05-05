@@ -91,9 +91,9 @@ publish2-nodejs-exemplo:
 
 # https://blog.callr.tech/building-docker-images-with-gitlab-ci-best-practices/
 publish-nodejs-exemplo:
-  extends: .desativado #.nodejs-exemplo
-  #rules:
-  #  - allow_failure: false
+  extends: .nodejs-exemplo
+  rules:
+    - allow_failure: false
   needs: ["test-nodejs-exemplo"]
   stage: publish
   
@@ -135,10 +135,10 @@ publish-nodejs-exemplo:
 
 # https://juju.is/tutorials/using-gitlab-as-a-container-registry#7-pull-your-container
 deploy-nodejs-exemplo:
-  extends: .nodejs-exemplo
-  #rules:
-  #  - allow_failure: false
-  #needs: ["publish-nodejs-exemplo"]
+  extends: .desativado #.nodejs-exemplo
+  rules:
+    - allow_failure: false
+  needs: ["publish-nodejs-exemplo"]
   
   stage: deploy
   image:
