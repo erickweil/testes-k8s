@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebrowser-conf
+data:
+  # Senhas geradas com https://bcrypt.online/ (Cost factor 10)
+  # admin:admin123
+  # exemplo:12345678
+  users.json: | 
+    {
+      "1":{
+          "username":"admin",
+          "name":"Admin",
+          "role":"admin",
+          "homedir":"\/",
+          "permissions":"read|write|upload|download|batchdownload|zip",
+          "password":"$2y$10$Nu35w4pteLfc7BDCIkDPkecjw8wsH8Y2GMfIewUbXLT7zzW6WOxwq"
+      },
+      "2":{
+          "username":"guest",
+          "name":"Guest",
+          "role":"guest",
+          "homedir":"\/",
+          "permissions":"",
+          "password":""
+      },
+      "3":{
+          "username":"exemplo",
+          "name":"Exemplo",
+          "role":"user",
+          "homedir":"\/",
+          "permissions":"read|write|upload|download|batchdownload|zip",
+          "password":"$2y$10$LVI4.atUj6ibWTGRL.LY/.dz4l84UNWLHW185qPNLkPqwHJxwd0OK"
+      }
+    }  
+  # admin:admin123
+  users.json.blank: |
+    {
+        "1":{
+            "username":"admin",
+            "name":"Admin",
+            "role":"admin",
+            "homedir":"\/",
+            "permissions":"read|write|upload|download|batchdownload|zip",
+            "password":"$2y$10$Nu35w4pteLfc7BDCIkDPkecjw8wsH8Y2GMfIewUbXLT7zzW6WOxwq"
+        },
+        "2":{
+            "username":"guest",
+            "name":"Guest",
+            "role":"guest",
+            "homedir":"\/",
+            "permissions":"",
+            "password":""
+        }
+    } 
+  .htaccess: |
+    deny from all

@@ -8,6 +8,9 @@ data:
   SERVER_NAME: "\\.app\\.fslab\\.dev"
   LOCAL_DOMAIN: ".default.svc.cluster.local"
   RESOLVER_IP: "10.43.0.10"
+
+  # Docker Pod que expõe todas as portas
+  DOCKER_POD_IP: "10.42.1.123"
 ---
 apiVersion: apps/v1
 kind: Deployment

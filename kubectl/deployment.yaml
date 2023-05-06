@@ -35,19 +35,20 @@ spec:
         volumeMounts:
         - mountPath: /home
           name: vol-home
-      - name: dind-daemon 
-        image: docker:dind 
-        command: ["dockerd", "--host", "tcp://127.0.0.1:2375"]
-        #args: ["--exec-opt", "native.cgroupdriver=systemd"]
-        resources: {}
-        securityContext: 
-            privileged: true 
-        volumeMounts: 
-          - name: docker-graph-storage 
-            mountPath: /var/lib/docker 
+      # Tem um pod próprio agora com serviço chamado 'docker' (Veja neste repositório ./dockerindocker/dockerpod.yaml)
+      #- name: dind-daemon 
+      #  image: docker:dind 
+      #  command: ["dockerd", "--host", "tcp://127.0.0.1:2375"]
+      #  #args: ["--exec-opt", "native.cgroupdriver=systemd"]
+      #  resources: {}
+      #  securityContext: 
+      #      privileged: true 
+      #  volumeMounts: 
+      #    - name: docker-graph-storage 
+      #      mountPath: /var/lib/docker 
       volumes: 
-      - name: docker-graph-storage
-        emptyDir: {}
+      #- name: docker-graph-storage
+      #  emptyDir: {}
       - name: vol-home
         persistentVolumeClaim:
           claimName: kubectl-home-pvc
@@ -75,8 +76,5 @@ spec:
     port: 22
     targetPort: 22
     nodePort: 30022
-  - name: http
-    port: 80
-    targetPort: 80
 
     

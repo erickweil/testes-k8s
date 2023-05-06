@@ -4,8 +4,14 @@
 # A ideia é que exista uma env USERS com os valores dos nomes e senhas
 #echo $USERS
 
+# --- remover depois do rebuild da imagem base
+mkdir -p /usr/local/lib/docker/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+# ---
+
 # https://askubuntu.com/questions/730/how-do-i-set-environment-variables
-echo $DOCKER_HOST >> /etc/environment
+echo "DOCKER_HOST=\"$DOCKER_HOST\"" >> /etc/environment
 
 # Onde deve estar os arquivos base de novos usuários
 mkdir -p $USERS_HOME_DIR/exemplo

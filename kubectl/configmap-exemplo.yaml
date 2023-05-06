@@ -11,3 +11,6 @@ data:
 
   # Grupo no qual os usuários farão parte
   USERS_GROUP: "kubernetes"
+  
+  # Tem um pod com um serviço chamado 'docker' já, mudar para 'localhost' se descomentar no deployment
+  DOCKER_HOST: "tcp://docker:2375"

@@ -25,6 +25,59 @@ data:
             }
     }
 
+    # Especial - Tem um pod que vai aceitar em qualquer porta
+    # Vai precisar re startar o nginx-dns com o ip novo do pod toda vez que ele mudar
+    # requisição em docker-8080.exemplo.com.br redireciona para IP.DO.POD.MESMO:8080
+    server {
+            listen ${NGINX_PORT};
+            listen [::]:${NGINX_PORT};
+
+            server_name ~^docker\-(?<porta>[0-9]+)${SERVER_NAME}$;
+
+            location / {
+                proxy_set_header X-Real-IP  $remote_addr;
+                proxy_set_header X-Forwarded-For $remote_addr;
+
+                #Permitir WebSockets
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+
+                proxy_set_header Host $host;
+                proxy_http_version 1.1;
+
+                proxy_pass http://${DOCKER_POD_IP}:$porta$request_uri;
+
+                add_header X-Dns-Regra "docker-8080.exemplo.com.br" always;
+          }
+    }
+
+    # requisição em batata-8080.exemplo.com.br redireciona para batata.local:8080
+    server {
+            listen ${NGINX_PORT};
+            listen [::]:${NGINX_PORT};
+
+            server_name ~^(?<subdomain>.+)\-(?<porta>[0-9]+)${SERVER_NAME}$;
+
+            location / {
+                resolver ${RESOLVER_IP} valid=10s;
+
+                proxy_set_header X-Real-IP  $remote_addr;
+                proxy_set_header X-Forwarded-For $remote_addr;
+
+                #Permitir WebSockets
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+
+                proxy_set_header Host $host;
+                proxy_http_version 1.1;
+
+                proxy_pass http://$subdomain${LOCAL_DOMAIN}:$porta$request_uri;
+
+                add_header X-Dns-Regra "batata-8080.exemplo.com.br" always;
+          }
+    }
+
+    # requisição em batata.exemplo.com.br redireciona para batata.local:80
     server {
             listen ${NGINX_PORT};
             listen [::]:${NGINX_PORT};
@@ -48,14 +101,13 @@ data:
 
                 proxy_pass http://$subdomain${LOCAL_DOMAIN}:80$request_uri;
 
+                add_header X-Dns-Regra "batata.exemplo.com.br" always;
                 # Debug
-                add_header X-Subdomain $subdomain always;
-                add_header X-Request-Uri $request_uri always;
-
+                # add_header X-Subdomain $subdomain always;
+                # add_header X-Request-Uri $request_uri always;
                 # Outra forma de Debug
-                #add_header Content-Type text/plain;
-                #return 200 "http://$subdomain$request_uri";
+                # add_header Content-Type text/plain;
+                # return 200 "http://$subdomain$request_uri";
           }
-
     }
 ---

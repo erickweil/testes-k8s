@@ -1,0 +1,34 @@
+# Pod com dockerd rodando compartilhado com todos que quiserem usar
+apiVersion: v1 
+kind: Pod 
+metadata: 
+  name: docker
+  labels:
+    app: docker
+spec: 
+    containers:
+      - name: docker
+        image: docker:dind 
+        command: ["dockerd", "--host", "tcp://0.0.0.0:2375"]
+        #args: ["--exec-opt", "native.cgroupdriver=systemd"]
+        resources: {}
+        securityContext: 
+            privileged: true 
+        volumeMounts: 
+          - name: docker-graph-storage 
+            mountPath: /var/lib/docker 
+    volumes: 
+      - name: docker-graph-storage 
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker
+spec:
+  type: ClusterIP
+  selector:
+    app: docker
+  ports:
+  - port: 2375
+    targetPort: 2375

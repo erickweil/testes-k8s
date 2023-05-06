@@ -1,0 +1,88 @@
+# Exemplo de Deployment que permite explorar arquivos em um volume
+# A ideia é colocar em claimName o nome do volume claim que deseja explorar
+# Documentação do FileGator: https://filegator.io/
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebrowser2
+spec:
+  selector:
+    matchLabels:
+      app: filebrowser2
+  template:
+    metadata:
+      labels:
+        app: filebrowser2
+    spec:
+      containers:
+      - name: filebrowser2
+        image: filegator/filegator
+        resources: {}
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+          - mountPath: /var/www/filegator/private # para armazenar as configurações de usuários
+            name: private-pv
+          ########
+          # mapeamentos dos volumes para gerenciamento
+          # cada entrada aqui deve possuir uma correspondente em volumes:
+          ########
+          - mountPath: /var/www/filegator/repository/mongo-auth2
+            name: mongo-auth2-pv
+      # https://stackoverflow.com/questions/56155495/how-do-i-copy-a-kubernetes-configmap-to-a-write-enabled-area-of-a-pod
+      initContainers: # Para permitir escrita (33 é o usuario www-data)
+        - name: volume-prewarming
+          image: busybox
+          command: ["sh", "-c", "cp -r /var/www/filegator/private-init/. /var/www/filegator/private && mkdir /var/www/filegator/private/logs && chown -R 33:33 /var/www/filegator/private || true"]
+          volumeMounts:
+            - mountPath: /var/www/filegator/private
+              name: private-pv
+            - mountPath: /var/www/filegator/private-init
+              name: private-pv-init
+      # filebrowser-private-pvc   Bound    pvc-24380aab-d099-485f-8fcc-cfcd6f816cbc   128Mi      RWO            local-path     40d
+      # kubectl-home-pvc          Bound    pvc-feb45318-45be-4d13-9f31-cf950a9171f0   5Gi        RWO            local-path     40d
+      # mongo-auth2               Bound    pvc-75f61007-5378-4590-be6e-23b15c4877e5   1Gi        RWO            local-path     23d
+      # mongo-unidex              Bound    pvc-fca37627-13bf-49de-ac19-a7c9088ea313   1Gi        RWO            local-path     11d
+      # weilplace-pvc             Bound    pvc-00cd4459-7686-49c5-8ad3-8ed19acc1d1b   128Mi      RWO            local-path     42d
+      # weilplace-volume-pixels   Bound    pvc-7b80b8c0-96fd-453e-ac76-a9e090a68740   100Mi      RWO            local-path     3d20h
+      volumes:
+      - name: private-pv
+        emptyDir: {}
+      - name: private-pv-init
+        configMap:
+          name: filebrowser-conf
+          items:
+            - key: users.json
+              path: users.json
+            - key: users.json.blank
+              path: users.json.blank
+            - key: .htaccess
+              path: .htaccess
+        #persistentVolumeClaim:
+        #  claimName: filebrowser2-private-pvc
+      - name: mongo-auth2-pv
+        persistentVolumeClaim:
+          claimName: mongo-auth2
+      # https://stackoverflow.com/questions/60247100/hostpath-assign-persistentvolume-to-the-specific-work-node-in-cluster
+      affinity:               
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - k3s-erick-controller-1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filebrowser-controller
+spec:
+  type: ClusterIP
+  selector:
+    app: filebrowser2
+  ports:
+  - port: 80
+    targetPort: 8080

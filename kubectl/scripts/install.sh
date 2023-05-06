@@ -33,5 +33,9 @@ export PATH=$PATH:/usr/local/bin/kustomize
 echo "Instalar htop"
 apt-get install -y htop
 
-#sudo apt install -y nginx
+# -- Não fez rebuild daqui para frente ainda
 
+#https://docs.docker.com/compose/install/linux/
+mkdir -p /usr/local/lib/docker/cli-plugins
+curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
