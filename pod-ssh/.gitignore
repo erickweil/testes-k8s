@@ -1,0 +1,4 @@
+*config
+*.pub
+*.env
+configmap.yaml

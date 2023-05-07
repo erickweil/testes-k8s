@@ -25,16 +25,17 @@ data:
             }
     }
 
-    # Especial - Tem um pod que vai aceitar em qualquer porta
-    # Vai precisar re startar o nginx-dns com o ip novo do pod toda vez que ele mudar
-    # requisição em docker-8080.exemplo.com.br redireciona para IP.DO.POD.MESMO:8080
+    # Especial - Tem um pod que roda docker que vai encaminhar de acordo com o nome de containers lá
+    # requisição em docker-8080.exemplo.com.br redireciona para o nginx http://docker:80/ que vai encaminhar para um container na porta 8080
     server {
             listen ${NGINX_PORT};
             listen [::]:${NGINX_PORT};
 
-            server_name ~^docker\-(?<porta>[0-9]+)${SERVER_NAME}$;
+            server_name ~^docker\-.+${SERVER_NAME}$;
 
             location / {
+                resolver ${RESOLVER_IP} valid=10s;
+
                 proxy_set_header X-Real-IP  $remote_addr;
                 proxy_set_header X-Forwarded-For $remote_addr;
 
@@ -45,7 +46,7 @@ data:
                 proxy_set_header Host $host;
                 proxy_http_version 1.1;
 
-                proxy_pass http://${DOCKER_POD_IP}:$porta$request_uri;
+                proxy_pass http://${DOCKER_SVC}${LOCAL_DOMAIN}:${DOCKER_SVC_PORT}$request_uri;
 
                 add_header X-Dns-Regra "docker-8080.exemplo.com.br" always;
           }

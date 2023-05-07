@@ -1,0 +1,64 @@
+Usando git a primeira vez? etapas:
+
+0. (Opcional) Gerar a chave ssh. Já tem uma chave ssh em ~/.ssh/id_ed25519.pub
+	Se ainda assim quiser gerar a chave novamente, execute:
+
+	ssh-keygen -t ed25519 -C "chave acesso remoto"
+
+1. Copiar a chave ssh para sua conta do Gitlab/Github. 
+	Para isso, leia seu conteúdo ( '~' é o mesmo que /home/seu-nome-de-usuario ):
+
+	cat ~/.ssh/id_ed25519.pub
+	(Irá aparecer o conteúdo do arquivo, copie ele)
+
+	Vá para as preferências de sua conta no Gitlab ou Github e adicione essa chave lá.
+
+2. Clonar um repositório
+	(Lembre-se de obter o link que começa com ssh, pois se for via https você não poderá fazer push)
+
+	git clone ssh://git@gitlab...
+
+	isso criará um diretório com o nome do projeto, execute ls para listar os diretórios
+	ls
+
+	e cd para entrar no diretório do projeto
+	cd nome-do-projeto
+
+3. Comece a trabalhar em uma branch
+	Uma vez dentro do diretório do projeto, liste todas as branchs com o comando:
+
+	git branch -a
+
+	escolha a branch que você quer por fazer o switch:
+	Por exemplo, se o comando anterior produziu:
+	primeiro@8259d19517f5:~/testes-k8s$ git branch -a
+	* main
+	remotes/origin/HEAD -> origin/main
+	remotes/origin/backup
+	remotes/origin/main
+
+	E você quer entrar na branch chamada 'backup'
+	execute:
+
+	git switch backup
+
+	Se aparecer:
+	Branch 'backup' set up to track remote branch 'backup' from 'origin'.
+	Switched to a new branch 'backup'
+
+	É porque funcionou! (execute git status para ter certeza que branch está)
+
+4. Fazendo um commit
+	Após realizar modificações nos arquivos, basta adicionar as mudanças
+	(Não esqueça o . )
+	git add .
+
+	e em seguida
+
+	git commit -m "mudança tal que eu fiz"
+
+5. Renviando commits para o repositório	remoto
+	Após realizar 1 ou mais commits, pode-se enviá-los para o repositório remoto com:
+
+	git push
+

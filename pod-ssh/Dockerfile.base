@@ -1,0 +1,14 @@
+# Imagem base, que possui todos os programas, 
+# Separado assim para não demorar demais o rebuild caso não precise alterar os programas instalados
+FROM ubuntu:latest
+
+WORKDIR /root
+
+COPY ./scripts/install.sh .
+RUN chmod +x ./install.sh
+RUN /bin/bash ./install.sh
+
+# https://stackoverflow.com/questions/38675925/is-it-possible-to-install-only-the-docker-cli-and-not-the-daemon
+COPY --from=docker:latest /usr/local/bin/docker /usr/local/bin/
+
+# docker build -t container-ssh-base -f Dockerfile.base .

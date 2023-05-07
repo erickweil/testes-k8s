@@ -30,5 +30,9 @@ spec:
   selector:
     app: docker
   ports:
-  - port: 2375
+  - name: sock
+    port: 2375
     targetPort: 2375
+  - name: http
+    port: 80 
+    targetPort: 80

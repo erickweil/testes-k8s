@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sshalunos-cm
+data:
+  # Variável de ambiente que controla que usuários serão criados
+  USERS: "primeiro:12345678;segundo:12345678;terceiro:12345678"
+  
+  # Diretório que será usado para criar as pastas dos usuários
+  USERS_HOME_DIR: "/home"
+
+  # Grupo no qual os usuários farão parte
+  USERS_GROUP: "alunos"
+  
+  # Tem um pod com um serviço chamado 'docker' já, mudar para 'localhost' se descomentar no deployment
+  DOCKER_HOST: "tcp://docker:2375"

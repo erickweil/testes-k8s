@@ -1,0 +1,42 @@
+Caso esteja utilizando o docker nesta instância, é importante saber o seguinte:
+
+O docker está em outro container, você apenas acessa o daemon pela rede, portanto
+caso inicie um container a porta exposta não está nesta máquina e sim lá.
+
+Da forma que foi feita, existe um redirecionamento que qualquer container rodando
+com porta publicada (com a opção -p ao rodar o container) pode ser acessado:
+
+Digamos que você executou:
+
+docker run -p 3000:80 erickweil/portugolweb
+
+Isto irá criar um container do site portugolweb com a porta 3000 exposta
+
+com este container rodando, você poderá acessá-lo pelo link:
+https://docker-3000.app.fslab.dev
+
+Outra forma seria colocar o container com um nome na rede 'public'
+docker run --name portugol --network public erickweil/portugolweb
+
+que então fica disponível no link (só funciona pq o container espera conexões na porta 80)
+https://docker-portugol.app.fslab.dev
+
+Caso fosse usado um container que espera conexões em outra porta, por exemplo
+um container do nodejs na porta 3000:
+
+docker run --name nodejs --network public erickweil/nodejs-exemplo
+
+Fica disponível no link:
+https://docker-nodejs-3000.app.fslab.dev
+
+-----------------------------------------------------------------------------
+Resumindo...
+
+Dependendo de como executar, o container será acessível com um url específico
+
+docker run -p <PORTA>
+	https://docker-<PORTA>.app.fslab.dev
+
+docker run --name <NOME> --network public
+	https://docker-<NOME>-<PORTA>.app.fslab.dev
+	https://docker-<NOME>.app.fslab.dev 		(Quando é Porta 80 não precisa)
