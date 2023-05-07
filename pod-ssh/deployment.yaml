@@ -33,23 +33,33 @@ spec:
         ports:
         - containerPort: 22
         volumeMounts:
-        - mountPath: /home
-          name: vol-home
-      # Tem um pod próprio agora com serviço chamado 'docker' (Veja neste repositório ./dockerindocker/dockerpod.yaml)
-      #- name: dind-daemon 
-      #  image: docker:dind 
-      #  command: ["dockerd", "--host", "tcp://127.0.0.1:2375"]
-      #  #args: ["--exec-opt", "native.cgroupdriver=systemd"]
-      #  resources: {}
-      #  securityContext: 
-      #      privileged: true 
-      #  volumeMounts: 
-      #    - name: docker-graph-storage 
-      #      mountPath: /var/lib/docker 
+        - name: vol
+          mountPath: /home
+          subPath: home
+
+      # Pod docker junto com o pod do acesso ssh, assim as portas exposta são disponíveis
+      # via localhost
+      # https://hub.docker.com/r/jpetazzo/dind
+      # http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/
+      # https://hub.docker.com/_/docker/
+      - name: docker
+        image: docker:dind 
+        command: ["dockerd", "--host", "tcp://0.0.0.0:2375"]
+        #args: ["--exec-opt", "native.cgroupdriver=systemd"]
+        resources: {}
+        securityContext: 
+            privileged: true 
+        volumeMounts:
+        # Para funcionar bind mounts
+        - name: vol
+          mountPath: /home
+          subPath: home 
+        # Para poder restart=unless-stopped e também ficar o cache das imagens
+        - name: vol
+          mountPath: /var/lib/docker 
+          subPath: docker
       volumes: 
-      #- name: docker-graph-storage
-      #  emptyDir: {}
-      - name: vol-home
+      - name: vol
         persistentVolumeClaim:
           claimName: sshalunos-pvc
       # https://stackoverflow.com/questions/60247100/hostpath-assign-persistentvolume-to-the-specific-work-node-in-cluster
@@ -61,7 +71,7 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - k3s-erick-controller-1
+                - k3s-erick-worker
 ---
 apiVersion: v1
 kind: Service
@@ -76,3 +86,19 @@ spec:
     port: 22
     targetPort: 22
     nodePort: 31022
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker
+spec:
+  type: ClusterIP
+  selector:
+    app: sshalunos
+  ports:
+  - name: sock
+    port: 2375
+    targetPort: 2375
+  - name: http
+    port: 80 
+    targetPort: 80

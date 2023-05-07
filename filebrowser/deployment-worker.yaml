@@ -32,6 +32,9 @@ spec:
             name: weilplace-pv
           - mountPath: /var/www/filegator/repository/kubectl-home
             name: kubectl-home-pv
+          - mountPath: /var/www/filegator/repository/alunos-home
+            name: alunos-home-pv
+            subPath: home
           - mountPath: /var/www/filegator/repository/mongo-unidex
             name: mongo-unidex
       # https://stackoverflow.com/questions/56155495/how-do-i-copy-a-kubernetes-configmap-to-a-write-enabled-area-of-a-pod
@@ -72,6 +75,9 @@ spec:
       - name: kubectl-home-pv
         persistentVolumeClaim:
           claimName: kubectl-home-pvc
+      - name: alunos-home-pv
+        persistentVolumeClaim:
+          claimName: sshalunos-pvc
       - name: mongo-unidex
         persistentVolumeClaim:
           claimName: mongo-unidex

@@ -1,4 +1,5 @@
-FROM container-ssh-base
+#FROM container-ssh-base
+FROM erickweil/container-ssh:base
 
 WORKDIR /root
 
@@ -14,13 +15,12 @@ ENV USERS="primeiro:12345678;segundo:12345678;terceiro:12345678"
 # exemplo RUN /bin/bash ./newuser.sh -u fslab -g kubernetes -d /home -p 123456
 
 COPY ./exemplo /home/exemplo
-
 COPY ./scripts/ .
-RUN chmod +x ./runusers.sh
-RUN chmod +x ./newuser.sh
 
-# Start SSH service
-RUN service ssh start
+RUN chmod +x ./runusers.sh \
+	&& chmod +x ./newuser.sh \
+	&& service ssh start
+
 # Expose docker port 22
 EXPOSE 22
 

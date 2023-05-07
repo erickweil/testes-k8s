@@ -12,5 +12,9 @@ data:
   # Grupo no qual os usuários farão parte
   USERS_GROUP: "kubernetes"
   
+  # Para funcionar caracteres especiais no nano
+  # https://stackoverflow.com/questions/54008456/special-characters-not-being-displayed-properly-inside-text-editors-on-a-docker
+  LANG: "pt_BR.UTF-8"
+  
   # Tem um pod com um serviço chamado 'docker' já, mudar para 'localhost' se descomentar no deployment
   DOCKER_HOST: "tcp://docker:2375"

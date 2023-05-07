@@ -2,3 +2,4 @@
 *.pub
 *.env
 configmap.yaml
+exemplo/*.txt

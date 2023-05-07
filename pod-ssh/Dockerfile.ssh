@@ -1,0 +1,13 @@
+# ubuntu:latest em vez de alpine:latest porque a ideia é ter mesmo todos os utilitários
+FROM ubuntu:latest
+
+WORKDIR /root
+
+# Se fizer rebuild desta parte da imagem, gera novamente o identificador do servidor
+# Obrigando os usuários a apagar a entrada anterior no ~/.ssh/known_hosts
+# https://goteleport.com/blog/shell-access-docker-container-with-ssh-and-docker-exec/
+RUN apt-get update && apt-get install -y \
+	openssh-server \
+	sudo
+
+# docker build -t erickweil/container-ssh:base-ssh -f Dockerfile.ssh .

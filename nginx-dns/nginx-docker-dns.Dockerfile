@@ -16,3 +16,5 @@ ENTRYPOINT ["sh","/before-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
 
 # docker build -t erickweil/nginx-docker-dns -f nginx-docker-dns.Dockerfile .
+# docker network create public
+#  docker run -d -p 80:80 --network public --restart unless-stopped erickweil/nginx-docker-dns
