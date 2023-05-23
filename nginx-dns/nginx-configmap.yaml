@@ -52,6 +52,33 @@ data:
           }
     }
 
+    # Especial - Tem um pod que roda docker que vai encaminhar de acordo com o nome de containers lá
+    # requisição em docker2-8080.exemplo.com.br redireciona para o nginx http://docker2:80/ que vai encaminhar para um container na porta 8080
+    server {
+            listen ${NGINX_PORT};
+            listen [::]:${NGINX_PORT};
+
+            server_name ~^docker2\-.+${SERVER_NAME}$;
+
+            location / {
+                resolver ${RESOLVER_IP} valid=10s;
+
+                proxy_set_header X-Real-IP  $remote_addr;
+                proxy_set_header X-Forwarded-For $remote_addr;
+
+                #Permitir WebSockets
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+
+                proxy_set_header Host $host;
+                proxy_http_version 1.1;
+
+                proxy_pass http://${DOCKER2_SVC}${LOCAL_DOMAIN}:${DOCKER_SVC_PORT}$request_uri;
+
+                add_header X-Dns-Regra "docker2-8080.exemplo.com.br" always;
+          }
+    }
+
     # requisição em batata-8080.exemplo.com.br redireciona para batata.local:8080
     server {
             listen ${NGINX_PORT};

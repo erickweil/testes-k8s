@@ -9,7 +9,8 @@ data:
   RESOLVER_IP: "10.43.0.10"
 
   # Docker Pod que expõe todas as portas
-  DOCKER_SVC: "docker"  
+  DOCKER_SVC: "docker" 
+  DOCKER2_SVC: "docker2"  
   DOCKER_SVC_PORT: "80"
 ---
 apiVersion: apps/v1

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+# https://gist.github.com/petitviolet/d36f33d145d0bbf4b54eb187b79d0244
+  name: sshalunos-docker-cm
+data:
+# Necessário especificar o MTU pois as conexões HTTPS estavam dando problema de fragmentação do pacote
+  daemon: |
+    {
+    "mtu": 1450
+    }
+---
