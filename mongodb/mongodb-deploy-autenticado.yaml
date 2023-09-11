@@ -1,0 +1,54 @@
+# Criando um serviço MongoDB, iniciando-o com um usuário e banco
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: erick-mongodb
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erick-mongodb
+spec:
+  selector:
+    matchLabels:
+      app: erick-mongodb
+  template:
+    metadata:
+      labels:
+        app: erick-mongodb
+    spec:
+      containers:
+      - name: erick-mongodb
+        image: mongo:latest
+        resources: {}
+        ports:
+        - containerPort: 27017
+        envFrom:
+        - configMapRef:
+            name: erick-mongodb-config
+        volumeMounts:
+          - mountPath: /data/db
+            name: pv
+      volumes:
+      - name: pv
+        persistentVolumeClaim:
+          claimName: erick-mongodb
+---
+apiVersion: v1
+kind: Service
+metadata:
+# Nome de host do mondodb
+  name: erick-mongodb
+spec:
+  type: ClusterIP
+  selector:
+    app: erick-mongodb
+  ports:
+  - port: 27017
+    targetPort: 27017

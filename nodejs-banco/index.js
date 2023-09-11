@@ -5,7 +5,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const mongoose = require('mongoose');
-const dbURL = 'mongodb://'+process.env.MONGODB_HOST+':'+process.env.MONGODB_PORT+'/nodeaula';
+//const dbURL = 'mongodb://'+process.env.MONGODB_HOST+':'+process.env.MONGODB_PORT+'/nodeaula';
+const dbURL = process.env.MONGODB_URL;
 console.log("Conectando no banco:"+dbURL);
 mongoose.connect(dbURL);
 
@@ -32,9 +33,12 @@ app.set("layout","./layouts/default");
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+let router = app;
 
-let router = express.Router()
-app.use(process.env.PUBLICPATH,router)
+if(process.env.PUBLICPATH) {
+    router = express.Router()
+    app.use(process.env.PUBLICPATH,router)
+}
 
 // Oferecer arquivos estáticos em './public/'
 router.use(express.static('public'));

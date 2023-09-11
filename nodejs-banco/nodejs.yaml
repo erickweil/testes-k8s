@@ -1,24 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-banco
+  name: erick-logs
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: nodejs-banco
+      app: erick-logs
   template:
     metadata:
       labels:
-        app: nodejs-banco
+        app: erick-logs
     spec:
       containers:
-      - name: nodejs-banco
-        image: erickweil/nodejs-k8s-banco:1.0.1
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "100m"
+      - name: erick-logs
+        image: erickweil/nodejs-k8s-banco:2.0.0
+        resources: {}
         ports:
         - containerPort: 3000
         env:
@@ -26,23 +23,22 @@ spec:
           value: "3000"
         - name: TITULO
           value: "NODEJS COM BANCO NO KUBERNETES"
-        - name: MONGODB_HOST
-#         value: "host.minikube.internal"
-          value: "mongodb"
-        - name: MONGODB_PORT
-          value: "27017"
-        - name: PUBLICPATH
-          value: "/nodejs/"
+        - name: MONGODB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: erick-mongodb-config
+              key: DB_URL
+        # Configure aqui o url de conexão com o banco
+        #  value: "mongodb://mongodb:27017/nodeaula"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nodejs-banco
+  name: erick-logs
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
-    app: nodejs-banco
+    app: erick-logs
   ports:
-  - port: 3000
+  - port: 80
     targetPort: 3000
-    nodePort: 31002

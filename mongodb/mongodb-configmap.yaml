@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: erick-mongodb-config
+data:
+  MONGO_INITDB_ROOT_USERNAME: "usuario"
+  MONGO_INITDB_ROOT_PASSWORD: "SenhaForteDemais"
+  MONGO_INITDB_DATABASE: "exemplodb"
+
+  DB_URL: "mongodb://usuario:SenhaForteDemais@erick-mongodb:27017/exemplodb?authSource=admin"
